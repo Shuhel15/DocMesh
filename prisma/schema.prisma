@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Password is optional because we will be using OAuth for authentication, but it is still required for the Prisma schema to work properly.
+model User {
+  id       String  @id @default(cuid())
+  name     String?
+  email    String  @unique
+  password String?
+  image    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // user has many companies, so we need to store the userId in the company model
+  companies     Company[]
+  // user has many conversations, so we need to store the userId in the conversation model
+  conversations Conversation[]
+
+  @@index([email])
+}
+
+// company belongs to a user, so we need to store the userId in the company model
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // company belongs to a user, so we need to store the userId in the company model
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // company has many chatbots, so we need to store the companyId in the chatbot model
+  chatbots Chatbot[]
+
+  @@index([userId])
+}
+
+model Chatbot {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // chatbot belongs to a company, so we need to store the companyId in the chatbot model
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  documents     Document[]
+  conversations Conversation[]
+  chunks        DocumentChunk[]
+
+  @@index([companyId])
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // document belongs to a chatbot, so we need to store the chatbotId in the document model
+  chatbotId String
+  chatbot   Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  chunks DocumentChunk[]
+
+  @@index([chatbotId])
+}
+
+model DocumentChunk {
+  id         String   @id @default(cuid())
+  content    String
+  chunkIndex Int
+  createdAt  DateTime @default(now())
+
+  // document chunk belongs to a document, so we need to store the documentId in the document chunk model
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  // document chunk belongs to a chatbot, so we need to store the chatbotId in the document chunk model
+  chatbotId String
+  chatbot   Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  // document chunk has an embedding, which is a vector of floats, so we need to store the embedding in the document chunk model
+  embedding Unsupported("vector(3072)")?
+
+  @@index([documentId])
+  @@index([chatbotId])
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // conversation belongs to a chatbot, so we need to store the chatbotId in the conversation model
+  chatbotId String
+  chatbot   Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  // conversation belongs to a user, so we need to store the userId in the conversation model
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // conversation has many messages, so we need to store the conversationId in the message model
+  messages Message[]
+
+  @@index([chatbotId])
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+
+  // message belongs to a conversation, so we need to store the conversationId in the message model
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
