@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import Navbar from "@/components/landing/navbar";
-import Footer from "@/components/landing/Footer";
+import Navbar from "@/components/ui/navbar";
+import Footer from "@/components/ui/Footer";
 
 
 const spaceGrotesk = Space_Grotesk({
@@ -25,16 +26,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={spaceGrotesk.variable}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar/>
-          {children}
-          <Footer/>
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
+            {children}
+            <Footer />
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

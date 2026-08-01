@@ -84,7 +84,8 @@ export async function POST(req: Request) {
       },
     });
 
-    const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${verificationToken}`;
+    const baseUrl = process.env.NEXTAUTH_URL || process.env.AUTH_URL || "http://localhost:3000";
+    const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
     const { data, error } = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: email,

@@ -116,7 +116,6 @@ export default function Home() {
                 Learn More
                 <MoveRight size={16} />
               </Link>
-            
             </motion.div>
           </motion.div>
 

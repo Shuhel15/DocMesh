@@ -1,272 +1,314 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { signIn } from "next-auth/react"
-
-function GoogleIcon() {
-	return (
-		<svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-			<path
-				fill="#4285F4"
-				d="M21.35 11.1h-9.18v2.98h5.29c-.23 1.37-.97 2.53-2.08 3.31v2.75h3.37c1.98-1.82 3.12-4.5 3.12-7.67 0-.72-.06-1.42-.15-2.07Z"
-			/>
-			<path
-				fill="#34A853"
-				d="M12.17 22c2.67 0 4.91-.88 6.55-2.39l-3.37-2.75c-.93.63-2.12 1-3.18 1-2.45 0-4.53-1.66-5.27-3.88H3.4v2.84A9.99 9.99 0 0 0 12.17 22Z"
-			/>
-			<path
-				fill="#FBBC05"
-				d="M6.9 14.98a5.98 5.98 0 0 1 0-3.96V8.18H3.4a10 10 0 0 0 0 8.9l3.5-2.1Z"
-			/>
-			<path
-				fill="#EA4335"
-				d="M12.17 5.44c1.45 0 2.76.5 3.79 1.47l2.84-2.84A9.57 9.57 0 0 0 12.17 2a9.99 9.99 0 0 0-8.77 5.18l3.5 2.7c.74-2.22 2.82-4.44 5.27-4.44Z"
-			/>
-		</svg>
-	)
-}
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { getSession, signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 export default function RegisterPage() {
-	const [name, setName] = useState("")
-	const [email, setEmail] = useState("")
-	const [password, setPassword] = useState("")
-	const [confirmPassword, setConfirmPassword] = useState("")
-	const [loading, setLoading] = useState(false)
-	const [googleLoading, setGoogleLoading] = useState(false)
-	const [error, setError] = useState("")
-	const [success, setSuccess] = useState("")
+  const router = useRouter();
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-		setError("")
-		setSuccess("")
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [checkingSession, setCheckingSession] = useState(true);
 
-		if (password !== confirmPassword) {
-			setError("Passwords do not match")
-			return
-		}
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-		try {
-			setLoading(true)
+    setError("");
+    setSuccess("");
 
-			const response = await fetch("/api/auth/register", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					name,
-					email,
-					password,
-				}),
-			})
+    const { name, email, password, confirmPassword } = formData;
 
-			const data = await response.json()
+    if (!name || !email || !password || !confirmPassword) {
+      setError("Please fill in all fields.");
+      return;
+    }
 
-			if (!response.ok) {
-				setError(data.message || "Something went wrong")
-				return
-			}
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
-			setSuccess(
-				"Account created successfully. Please check your email to verify your account.",
-			)
+    try {
+      setLoading(true);
 
-			setName("")
-			setEmail("")
-			setPassword("")
-			setConfirmPassword("")
-		} catch (error) {
-			console.error("REGISTER_ERROR:", error)
-			setError("Something went wrong. Please try again.")
-		} finally {
-			setLoading(false)
-		}
-	}
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
 
-	const handleGoogleLogin = async () => {
-		setError("")
-		setGoogleLoading(true)
+      const data = await response.json();
 
-		try {
-			await signIn("google", {
-				callbackUrl: "/dashboard",
-			})
-		} catch (error) {
-			console.error("GOOGLE_LOGIN_ERROR:", error)
-			setError("Google login failed. Please try again.")
-			setGoogleLoading(false)
-		}
-	}
+      if (!response.ok) {
+        setError(data.message || data.error || "Registration failed.");
+        return;
+      }
 
-	return (
-		<main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
-			<div className="mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-md items-center justify-center">
-				<section className="w-full rounded-3xl border border-border bg-white/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-sm dark:bg-black/30 sm:p-8">
-					<div className="flex flex-col items-center text-center">
-						<Link
-							href="/"
-							className="text-2xl font-bold tracking-tight text-black dark:text-white"
-						>
-							<span className="relative inline-block">
-								KNOWLY
-								<span className="absolute -bottom-2 left-0 h-0.75 w-full rounded-full bg-black/20 dark:bg-white/20" />
-							</span>
-						</Link>
+      setSuccess(
+        "Account created successfully. Redirecting to verify your email...",
+      );
+      sessionStorage.setItem("verificationEmail", email);
 
-						<h1 className="mt-6 text-3xl font-semibold tracking-tight text-black dark:text-white">
-							Create your account
-						</h1>
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
 
-						<p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-							Join Knowly to organize your knowledge, chat with documents, and
-							keep everything in one place.
-						</p>
-					</div>
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+    } catch (error) {
+      console.error("REGISTER_ERROR:", error);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-					<form onSubmit={handleSubmit} className="mt-8 space-y-4">
-						<div className="space-y-2">
-							<label
-								htmlFor="name"
-								className="text-sm font-medium text-black/80 dark:text-white/80"
-							>
-								Name
-							</label>
+  const handleGoogleLogin = async () => {
+    setError("");
+    setSuccess("");
+    setGoogleLoading(true);
 
-							<input
-								id="name"
-								name="name"
-								type="text"
-								autoComplete="name"
-								placeholder="Your name"
-								value={name}
-								onChange={(e) => setName(e.target.value)}
-								className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
-							/>
-						</div>
+    try {
+      // Redirect to dashboard after successful Google login
+      await signIn("google", {
+        callbackUrl: "/dashboard",
+      });
+    } catch (error) {
+      console.error("GOOGLE_LOGIN_ERROR:", error);
+      setError("Google login failed. Please try again.");
+      setGoogleLoading(false);
+    }
+  };
 
-						<div className="space-y-2">
-							<label
-								htmlFor="email"
-								className="text-sm font-medium text-black/80 dark:text-white/80"
-							>
-								Email
-							</label>
+  useEffect(() => {
+    const checkSession = async () => {
+      const session = await getSession();
 
-							<input
-								id="email"
-								name="email"
-								type="email"
-								autoComplete="email"
-								placeholder="you@example.com"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
-							/>
-						</div>
+      if (session) {
+        router.replace("/dashboard");
+        return;
+      }
 
-						<div className="space-y-2">
-							<label
-								htmlFor="password"
-								className="text-sm font-medium text-black/80 dark:text-white/80"
-							>
-								Password
-							</label>
+      setCheckingSession(false);
+    };
 
-							<input
-								id="password"
-								name="password"
-								type="password"
-								autoComplete="new-password"
-								placeholder="Create a password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
-							/>
-						</div>
+    checkSession();
+  }, [router]);
 
-						<div className="space-y-2">
-							<label
-								htmlFor="confirmPassword"
-								className="text-sm font-medium text-black/80 dark:text-white/80"
-							>
-								Confirm Password
-							</label>
+  if (checkingSession) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader />
+        </div>
+      </main>
+    );
+  }
+  return (
+    <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8 md:mt-20 mt-10">
+      <div className="mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-6xl items-center justify-center">
+        <section className="grid w-full overflow-hidden rounded-3xl border border-border bg-white/80 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-sm dark:bg-black/30 md:grid-cols-[1.05fr_0.95fr]">
+          <div className="hidden flex-col justify-center bg-black p-8 text-white sm:p-10 lg:flex lg:p-12 dark:bg-white dark:text-black">
+            <h1 className="text-2xl font-bold tracking-tight">KNOWLY</h1>
+            <h2 className="mt-6 text-3xl font-semibold tracking-tight">
+              Create your account
+            </h2>
+            <p className="mt-3 max-w-md text-sm leading-6 text-white/80 dark:text-black/80">
+              Join Knowly to organize your knowledge, chat with documents, and
+              keep everything in one place.
+            </p>
+            <div className="mt-8 space-y-3 text-sm text-white/80 dark:text-black/80">
+              <p>• Save and organize your important documents in one place.</p>
+              <p>• Chat with your content and find answers faster.</p>
+              <p>• Keep your workflow simple, secure, and productive.</p>
+            </div>
+          </div>
 
-							<input
-								id="confirmPassword"
-								name="confirmPassword"
-								type="password"
-								autoComplete="new-password"
-								placeholder="Re-enter your password"
-								value={confirmPassword}
-								onChange={(e) => setConfirmPassword(e.target.value)}
-								className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
-							/>
-						</div>
+          <div className="p-6 sm:p-8">
+            <form onSubmit={handleSubmit} className="space-y-4">
 
-						{error && (
-							<p className="text-sm text-red-600 dark:text-red-400">
-								{error}
-							</p>
-						)}
+              <h1 className="text-2xl font-bold text-center text-foreground">Create your account</h1>
+              <p className="text-center text-sm text-black/60 dark:text-white/60">Turn your documents into an AI-powered RAG chatbot and embed it on your website with just one line of code.</p>
+            {/* google  */}
+            <Button
+              onClick={handleGoogleLogin}
+              type="button"
+              variant="outline"
+              disabled={loading || googleLoading}
+              className="h-11 w-full rounded-xl border-border bg-white text-black hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60 dark:bg-black/20 dark:text-white dark:hover:bg-white/10 mt-2 "
+            >
+              <span className="mr-2 inline-flex items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
+                <FcGoogle />
+              </span>
 
-						{success && (
-							<p className="text-sm text-green-600 dark:text-green-400">
-								{success}
-							</p>
-						)}
+              {googleLoading ? "Connecting..." : "Continue with Google"}
+            </Button>
 
-						<Button
-							type="submit"
-							disabled={loading || googleLoading}
-							className="h-11 w-full rounded-xl bg-black text-white hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
-						>
-							{loading ? "Creating account..." : "Create Account"}
-						</Button>
+            <div className="flex items-center gap-3 py-1">
+              <div className="h-px flex-1 bg-border" />
 
-						<div className="flex items-center gap-3 py-1">
-							<div className="h-px flex-1 bg-border" />
+              <span className="text-xs font-medium tracking-[0.2em] text-muted-foreground">
+                OR
+              </span>
 
-							<span className="text-xs font-medium tracking-[0.2em] text-muted-foreground">
-								OR
-							</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
 
-							<div className="h-px flex-1 bg-border" />
-						</div>
+            {/* credential */}
+            <div className="space-y-2">
+              <label
+                htmlFor="name"
+                className="text-sm font-medium text-black/80 dark:text-white/80"
+              >
+                Name
+              </label>
 
-						<Button
-							onClick={handleGoogleLogin}
-							type="button"
-							variant="outline"
-							disabled={loading || googleLoading}
-							className="h-11 w-full rounded-xl border-border bg-white text-black hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60 dark:bg-black/20 dark:text-white dark:hover:bg-white/10"
-						>
-							<span className="mr-2 inline-flex items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
-								<GoogleIcon />
-							</span>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                placeholder="Your name"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
+                }
+                className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
+              />
+            </div>
 
-							{googleLoading
-								? "Connecting..."
-								: "Continue with Google"}
-						</Button>
-					</form>
+            <div className="space-y-2">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-black/80 dark:text-white/80"
+              >
+                Email
+              </label>
 
-					<p className="mt-6 text-center text-sm text-muted-foreground">
-						Already have an account?{" "}
-						<Link
-							href="/login"
-							className="font-medium text-black underline-offset-4 hover:underline dark:text-white"
-						>
-							Log in
-						</Link>
-					</p>
-				</section>
-			</div>
-		</main>
-	)
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    email: e.target.value,
+                  }))
+                }
+                className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-black/80 dark:text-white/80"
+              >
+                Password
+              </label>
+
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    password: e.target.value,
+                  }))
+                }
+                className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="confirmPassword"
+                className="text-sm font-medium text-black/80 dark:text-white/80"
+              >
+                Confirm Password
+              </label>
+
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Re-enter your password"
+                value={formData.confirmPassword}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    confirmPassword: e.target.value,
+                  }))
+                }
+                className="flex h-11 w-full rounded-xl border border-border bg-white px-4 text-sm text-black placeholder:text-muted-foreground/80 outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 dark:bg-black/20 dark:text-white dark:placeholder:text-white/40 dark:focus:border-white dark:focus:ring-white/10"
+              />
+            </div>
+
+            {error && (
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            )}
+
+            {success && (
+              <p className="text-sm text-green-600 dark:text-green-400">
+                {success}
+              </p>
+            )}
+
+            {/* Register Button */}
+            <Button
+              type="submit"
+              disabled={loading || googleLoading}
+              className="h-11 w-full rounded-xl bg-black text-white hover:bg-black/90 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              {loading ? "Creating account..." : "Create Account"}
+            </Button>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="font-medium text-black underline-offset-4 hover:underline dark:text-white"
+              >
+                Log in
+              </Link>
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
 }
-

@@ -4,15 +4,15 @@
 import Link from "next/link";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 
-const navLinks = [
-  { name: "Home", href: "/" },
+const baseNavLinks: Array<{ name: string; href: string; isAction?: boolean }> = [
+  { name: "Home", href: "#home" },
   { name: "How it works", href: "#working" },
   { name: "Features", href: "#features" },
-  { name: "Login", href: "/" },
-  { name: "Get Started", href: "/" },
 ];
 
 const navVariants:Variants = {
@@ -58,9 +58,16 @@ const linkVariants:Variants = {
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+  const { data: session } = useSession();
 
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const isAuthenticated = Boolean(session?.user);
+  const navLinks = isAuthenticated
+    ? [...baseNavLinks, { name: "Logout", href: "#", isAction: true }]
+    : [...baseNavLinks, { name: "Login", href: "/login" }];
 
   useEffect(() => {
     setMounted(true);
@@ -68,6 +75,16 @@ export default function Navbar() {
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    closeMenu();
+    await signOut({ callbackUrl: "/" });
+  };
+
+  const handleGetStarted = () => {
+    closeMenu();
+    router.push(isAuthenticated ? "/dashboard" : "/register");
   };
 
   return (
@@ -78,8 +95,7 @@ export default function Navbar() {
       className="fixed left-1/2 top-5 z-50 w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2"
     >
       <motion.nav
-        className=" flex min-h-16 items-center rounded-[22px] border border-black/10 bg-white/70 px-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/40 sm:px-5
-        "
+        className="flex min-h-16 items-center justify-between rounded-[22px] border border-black/10 bg-white/70 px-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/40 sm:px-5"
       >
         {/* Logo */}
         <motion.div
@@ -90,11 +106,12 @@ export default function Navbar() {
             duration: 0.4,
             ease: "easeOut",
           }}
+          className="flex-1"
         >
           <Link
             href="/"
             onClick={closeMenu}
-            className="text-xl font-bold tracking-tight text-black dark:text-white"
+            className="text-xl font-bold tracking-tight text-foreground"
           >
             <span className="relative inline-block">
               KNOWLY
@@ -137,7 +154,7 @@ export default function Navbar() {
           variants={linksContainer}
           initial="hidden"
           animate="show"
-          className="ml-auto hidden items-center gap-1 md:flex"
+          className="hidden flex-1 items-center justify-center gap-1 md:flex"
         >
           {navLinks.map((link) => (
             <motion.div
@@ -145,15 +162,34 @@ export default function Navbar() {
               variants={linkVariants}
               whileHover={{ y: -1 }}
             >
-              <Link
-                href={link.href}
-                className=" block rounded-xl px-4 py-3 text-[15px] font-medium text-black/50 transition hover:bg-zinc-200 hover:text-black dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white
-                "
-              >
-                {link.name}
-              </Link>
+              {link.isAction ? (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="block rounded-xl px-4 py-3 text-[15px] font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
+                >
+                  {link.name}
+                </button>
+              ) : (
+                <Link
+                  href={link.href}
+                  className="block rounded-xl px-4 py-3 text-[15px] font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
+                >
+                  {link.name}
+                </Link>
+              )}
             </motion.div>
           ))}
+
+          <motion.div variants={linkVariants} whileHover={{ y: -1 }}>
+            <button
+              type="button"
+              onClick={handleGetStarted}
+              className="ml-2 rounded-xl border border-primary/20 bg-primary px-4 py-3 text-[15px] font-semibold text-primary-foreground transition hover:opacity-90"
+            >
+              Get Started
+            </button>
+          </motion.div>
 
           {/* Desktop Theme Toggle */}
           {mounted && (
@@ -183,7 +219,7 @@ export default function Navbar() {
         </motion.div> 
         
         {/* mobile */}
-        <div className="ml-auto flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
           {/* Mobile Theme Toggle */}
           {mounted && (
             <motion.button
@@ -263,7 +299,7 @@ export default function Navbar() {
               duration: 0.25,
               ease: "easeOut",
             }}
-            className=" mt-2 rounded-[22px] border border-black/10 bg-white/90 p-3 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/80 md:hidden
+            className=" flex justify-center items-center mt-2 rounded-[22px] border border-black/10 bg-white/90 p-3 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/80 md:hidden
             "
           >
             <motion.div
@@ -273,20 +309,36 @@ export default function Navbar() {
               className="flex flex-col gap-1"
             >
               {navLinks.map((link) => (
-                <motion.div
-                  key={link.name}
-                  variants={linkVariants}
-                >
-                  <Link
-                    href={link.href}
-                    onClick={closeMenu}
-                    className=" block rounded-xl px-4 py-3 text-sm font-medium text-black/60 transition hover:bg-black/5 hover:text-black dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white
-                    "
-                  >
-                    {link.name}
-                  </Link>
+                <motion.div key={link.name} variants={linkVariants}>
+                  {link.isAction ? (
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="block w-full rounded-xl px-4 py-3 text-center text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
+                    >
+                      {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      onClick={closeMenu}
+                      className="block rounded-xl px-4 py-3 text-center text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
+
+              <motion.div variants={linkVariants}>
+                <button
+                  type="button"
+                  onClick={handleGetStarted}
+                  className="w-full rounded-xl border border-primary/20 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+                >
+                  Get Started
+                </button>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}

@@ -80,10 +80,7 @@ export async function GET(req: Request) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Email verified successfully",
-    });
+    return NextResponse.redirect(new URL("/login?verified=true", req.url));
   } catch (error) {
     console.error("VERIFY_EMAIL_ERROR:", error);
 
