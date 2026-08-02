@@ -4,11 +4,36 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Bot, ArrowRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
+import { motion, type Variants } from "framer-motion";
 
 type Chatbot = {
   id: string;
   name: string;
   createdAt: string;
+};
+
+const containerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
 };
 
 export default function ChatbotsPage() {
@@ -37,9 +62,13 @@ export default function ChatbotsPage() {
 
   return (
     <main className="min-h-screen bg-background px-6 pt-30 pb-10 text-foreground">
-      <div className="mx-auto max-w-6xl">
-
-        <div className="flex items-center justify-between">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="mx-auto max-w-6xl"
+      >
+        <motion.div variants={itemVariants} className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">
               Your Chatbots
@@ -57,8 +86,7 @@ export default function ChatbotsPage() {
             <Plus size={18} />
             Create Chatbot
           </Link>
-        </div>
-
+        </motion.div>
 
         <div className="mt-10">
           {loading ? (
@@ -66,7 +94,7 @@ export default function ChatbotsPage() {
               <Loader />
             </div>
           ) : chatbots.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border bg-background p-12 text-center">
+            <motion.div variants={itemVariants} className="rounded-xl border border-dashed border-border bg-background p-12 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
                 <Bot size={24} />
               </div>
@@ -87,15 +115,15 @@ export default function ChatbotsPage() {
                 <Plus size={18} />
                 Create your first chatbot
               </Link>
-            </div>
+            </motion.div>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div variants={containerVariants} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {chatbots.map((chatbot) => (
-                <div
+                <motion.div
                   key={chatbot.id}
+                  variants={itemVariants}
                   className="group rounded-xl border border-border bg-background p-5 transition-all duration-200 hover:border-foreground/40 hover:shadow-md"
                 >
-
                   <div className="flex items-start justify-between">
                     <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-muted text-foreground transition-colors duration-200 group-hover:bg-foreground group-hover:text-background">
                       <Bot size={22} />
@@ -125,12 +153,12 @@ export default function ChatbotsPage() {
                       className="transition-transform duration-200 group-hover:translate-x-1"
                     />
                   </Link>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
-      </div>
+      </motion.div>
     </main>
   );
 }

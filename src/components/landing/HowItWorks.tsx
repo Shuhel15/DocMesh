@@ -34,15 +34,15 @@ const containerVariants: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.12,
     },
   },
 };
 
-const cardVariants: Variants = {
+const itemVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: 40,
+    y: 30,
   },
   show: {
     opacity: 1,
@@ -97,7 +97,7 @@ export default function HowItWorks() {
             return (
               <motion.div
                 key={step.title}
-                variants={cardVariants}
+                variants={itemVariants}
                 whileHover={{
                   y: -8,
                   scale: 1.03,

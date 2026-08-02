@@ -1,8 +1,16 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Bot, FileText, Code2} from "lucide-react";
+import {
+  ArrowLeft,
+  Bot,
+  FileText,
+  Code2,
+} from "lucide-react";
+
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import UploadForm from "@/components/documents/upload-form";
+import ManualTextForm from "@/components/documents/manual-text-form";
 
 interface ChatbotPageProps {
   params: Promise<{
@@ -78,13 +86,13 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                 {chatbot.name}
               </h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Created on {new Date(chatbot.createdAt).toLocaleDateString()} ID: {chatbot.id}
+                Created on {new Date(chatbot.createdAt).toLocaleDateString()} <br/>ID: {chatbot.id}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+            <span className="rounded-full border border-border text-white bg-green-500 dark:bg-green-600 px-3 py-1 text-xs font-medium ">
               Active
             </span>
           </div>
@@ -106,6 +114,11 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                   </p>
                 </div>
               </div>
+              
+              {/* file upload */}
+              <UploadForm chatbotId={chatbot.id} />
+              {/* manula text area  */}
+              <ManualTextForm chatbotId={chatbot.id} />
 
               {chatbot.documents.length === 0 ? (
                 <div className="rounded-lg border border-dashed border-border p-8 text-center mt-4">
@@ -122,7 +135,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                       <div>
                         <p className="text-sm font-medium">{doc.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {doc.type} • {new Date(doc.createdAt).toLocaleDateString()}
+                         Type: {doc.type} <br/>Date: {new Date(doc.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>

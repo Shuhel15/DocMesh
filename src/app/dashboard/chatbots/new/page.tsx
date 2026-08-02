@@ -3,6 +3,31 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion, type Variants } from "framer-motion";
+
+const containerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
 
 export default function NewChatbotPage() {
   const [name, setName] = useState("");
@@ -39,9 +64,14 @@ export default function NewChatbotPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground px-6 py-30">
-      <div className="mx-auto max-w-2xl">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="mx-auto max-w-2xl"
+      >
         {/* Header */}
-        <div className="mb-10">
+        <motion.div variants={itemVariants} className="mb-10">
           <Link
             href="/dashboard/chatbots"
             className="mb-6 inline-block text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -56,10 +86,10 @@ export default function NewChatbotPage() {
           <p className="mt-2 text-muted-foreground">
             Give your chatbot a name to get started.
           </p>
-        </div>
+        </motion.div>
 
         {/* Form */}
-        <form onSubmit={handleCreate} className="space-y-6">
+        <motion.form variants={itemVariants} onSubmit={handleCreate} className="space-y-6">
           <div>
             <label htmlFor="name" className="mb-2 block text-sm font-medium">
               Chatbot Name
@@ -93,8 +123,8 @@ export default function NewChatbotPage() {
               Create Chatbot
             </button>
           </div>
-        </form>
-      </div>
+        </motion.form>
+      </motion.div>
     </main>
   );
 }

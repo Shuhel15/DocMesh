@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Bot, Plus, ArrowRight, MessageSquare } from "lucide-react";
-
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -156,7 +155,7 @@ export default async function DashboardPage() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-muted text-foreground">
                       <Bot size={20} />
                     </div>
-                    <span className="rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                    <span className="rounded-full border border-border text-white bg-green-500 dark:bg-green-600 px-2.5 py-0.5 text-xs font-medium">
                       Active
                     </span>
                   </div>
