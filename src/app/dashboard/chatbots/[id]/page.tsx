@@ -1,0 +1,167 @@
+import { redirect, notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, Bot, FileText, Code2} from "lucide-react";
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+
+interface ChatbotPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  const { id } = await params;
+
+  // find user's company
+  const company = await prisma.company.findFirst({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  if (!company) {
+    redirect("/dashboard");
+  }
+
+  // fetch the chatbot for this company
+  const chatbot = await prisma.chatbot.findFirst({
+    where: {
+      id,
+      companyId: company.id,
+    },
+    include: {
+      documents: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+      _count: {
+        select: {
+          conversations: true,
+          chunks: true,
+        },
+      },
+    },
+  });
+
+  if (!chatbot) {
+    notFound();
+  }
+
+  const embedScript = `<script src="${process.env.NEXTAUTH_URL || "https://knowly.ai"}/embed.js" data-chatbot-id="${chatbot.id}" defer></script>`;
+
+  return (
+    <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6">
+      <div className="mx-auto max-w-5xl">
+        <Link
+          href="/dashboard/chatbots"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground mb-6"
+        >
+          <ArrowLeft size={16} className="hover:transition-transform hover:translate-x-11" />
+          Back to Chatbots
+        </Link>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-6">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+              <Bot size={24} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {chatbot.name}
+              </h1>
+              <p className="text-xs text-muted-foreground mt-1">
+                Created on {new Date(chatbot.createdAt).toLocaleDateString()} ID: {chatbot.id}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+              Active
+            </span>
+          </div>
+        </div>
+
+        {/* Content Section */}
+        <div className="mt-8 grid gap-8 md:grid-cols-3">
+
+          <div className="md:col-span-2 space-y-6">
+            <div className="rounded-xl border border-border bg-card p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold flex items-center gap-2">
+                    <FileText size={18} />
+                    Knowledge Base Documents
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {chatbot.documents.length} document(s) uploaded
+                  </p>
+                </div>
+              </div>
+
+              {chatbot.documents.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border p-8 text-center mt-4">
+                  <FileText size={28} className="mx-auto text-muted-foreground mb-2" />
+                  <p className="text-sm font-medium">No documents added yet</p>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                    Upload documents (PDF, TXT, DOCX) to train this chatbot with your specific business data.
+                  </p>
+                </div>
+              ) : (
+                <div className="divide-y divide-border mt-4">
+                  {chatbot.documents.map((doc) => (
+                    <div key={doc.id} className="py-3 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">{doc.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {doc.type} • {new Date(doc.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-xl border border-border bg-card p-5">
+                <p className="text-xs text-muted-foreground">Total Conversations</p>
+                <p className="text-2xl font-bold mt-2">{chatbot._count.conversations}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-5">
+                <p className="text-xs text-muted-foreground">Knowledge Chunks</p>
+                <p className="text-2xl font-bold mt-2">{chatbot._count.chunks}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* embeded code sidebar */}
+          <div className="space-y-6">
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
+                <Code2 size={18} />
+                Embed Code
+              </h2>
+              <p className="text-xs text-muted-foreground mb-4">
+                Paste this snippet into your HTML before the ending &lt;/body&gt; tag.
+              </p>
+
+              <div className="relative rounded-lg bg-muted p-3 text-xs font-mono break-all text-foreground border border-border">
+                {embedScript}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}

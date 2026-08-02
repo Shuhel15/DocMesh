@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={spaceGrotesk.variable}>
+      <body className={`${spaceGrotesk.variable} font-sans antialiased`}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"

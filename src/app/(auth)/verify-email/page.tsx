@@ -21,7 +21,7 @@ function VerifyEmailContent() {
           
           <Link
             href="/"
-            className="text-2xl font-bold tracking-tight text-forground"
+            className="text-2xl font-bold tracking-tight text-foreground"
           >
             <span className="relative inline-block">
               KNOWLY
@@ -34,7 +34,7 @@ function VerifyEmailContent() {
               <Mail />
             </div>
 
-            <h1 className="mt-6 text-2xl font-semibold tracking-tight text-forground">
+            <h1 className="mt-6 text-2xl font-semibold tracking-tight text-foreground">
               Check your email
             </h1>
 

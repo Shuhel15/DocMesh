@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // Email verification token generation and storage
+    // email verification token generation and storage
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
     await prisma.verificationToken.create({

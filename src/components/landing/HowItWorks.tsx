@@ -57,8 +57,8 @@ const cardVariants: Variants = {
 export default function HowItWorks() {
   return (
     <section
-      id="working"
-      className="border-t border-border bg-background px-6 py-24"
+      id="how-it-works"
+      className="scroll-mt-28 border-t border-border bg-background px-6 py-24"
     >
       <div className="mx-auto max-w-6xl">
         <motion.div

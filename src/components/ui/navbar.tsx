@@ -9,13 +9,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 
-const baseNavLinks: Array<{ name: string; href: string; isAction?: boolean }> = [
-  { name: "Home", href: "#home" },
-  { name: "How it works", href: "#working" },
-  { name: "Features", href: "#features" },
+const baseNavLinks = [
+  { name: "Home", href: "/#home" },
+  { name: "How it works", href: "/#how-it-works" },
+  { name: "Features", href: "/#features" },
 ];
 
-const navVariants:Variants = {
+const navVariants: Variants = {
   hidden: {
     opacity: 0,
     y: -20,
@@ -41,7 +41,7 @@ const linksContainer: Variants = {
   },
 };
 
-const linkVariants:Variants = {
+const linkVariants: Variants = {
   hidden: {
     opacity: 0,
     y: -8,
@@ -65,9 +65,10 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isAuthenticated = Boolean(session?.user);
+
   const navLinks = isAuthenticated
-    ? [...baseNavLinks, { name: "Logout", href: "#", isAction: true }]
-    : [...baseNavLinks, { name: "Login", href: "/login" }];
+    ? [...baseNavLinks, { name: "Dashboard", href: "/dashboard" }]
+    : baseNavLinks;
 
   useEffect(() => {
     setMounted(true);
@@ -82,7 +83,7 @@ export default function Navbar() {
     await signOut({ callbackUrl: "/" });
   };
 
-  const handleGetStarted = () => {
+  const handleActionClick = () => {
     closeMenu();
     router.push(isAuthenticated ? "/dashboard" : "/register");
   };
@@ -94,9 +95,7 @@ export default function Navbar() {
       variants={navVariants}
       className="fixed left-1/2 top-5 z-50 w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2"
     >
-      <motion.nav
-        className="flex min-h-16 items-center justify-between rounded-[22px] border border-black/10 bg-white/70 px-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/40 sm:px-5"
-      >
+      <motion.nav className="flex min-h-16 items-center justify-between rounded-[22px] border border-black/10 bg-white/80 px-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/60 sm:px-6">
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -15 }}
@@ -106,7 +105,7 @@ export default function Navbar() {
             duration: 0.4,
             ease: "easeOut",
           }}
-          className="flex-1"
+          className="shrink-0"
         >
           <Link
             href="/"
@@ -115,7 +114,6 @@ export default function Navbar() {
           >
             <span className="relative inline-block">
               KNOWLY
-
               <motion.svg
                 initial={{ opacity: 0, pathLength: 0 }}
                 animate={{ opacity: 1, pathLength: 1 }}
@@ -137,7 +135,6 @@ export default function Navbar() {
                   strokeLinecap="round"
                   opacity="0.25"
                 />
-
                 <path
                   d="M2 6 C35 2 65 8 100 5 S165 2 198 6"
                   stroke="currentColor"
@@ -149,64 +146,68 @@ export default function Navbar() {
           </Link>
         </motion.div>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation Links */}
         <motion.div
           variants={linksContainer}
           initial="hidden"
           animate="show"
-          className="hidden flex-1 items-center justify-center gap-1 md:flex"
+          className="hidden items-center gap-1 md:flex"
         >
           {navLinks.map((link) => (
-            <motion.div
-              key={link.name}
-              variants={linkVariants}
-              whileHover={{ y: -1 }}
-            >
-              {link.isAction ? (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="block rounded-xl px-4 py-3 text-[15px] font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
-                >
-                  {link.name}
-                </button>
-              ) : (
-                <Link
-                  href={link.href}
-                  className="block rounded-xl px-4 py-3 text-[15px] font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
-                >
-                  {link.name}
-                </Link>
-              )}
+            <motion.div key={link.name} variants={linkVariants} whileHover={{ y: -1 }}>
+              <Link
+                href={link.href}
+                className="block rounded-xl px-3.5 py-2 text-[15px] font-medium text-foreground/80 transition hover:bg-muted hover:text-foreground dark:hover:bg-white/10 dark:hover:text-white"
+              >
+                {link.name}
+              </Link>
             </motion.div>
           ))}
+        </motion.div>
 
-          <motion.div variants={linkVariants} whileHover={{ y: -1 }}>
-            <button
-              type="button"
-              onClick={handleGetStarted}
-              className="ml-2 rounded-xl border border-primary/20 bg-primary px-4 py-3 text-[15px] font-semibold text-primary-foreground transition hover:opacity-90"
-            >
-              Get Started
-            </button>
-          </motion.div>
+        {/* Desktop Right Actions */}
+        <div className="hidden items-center gap-2.5 md:flex">
+          {isAuthenticated ? (
+            <>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-xl px-3.5 py-2 text-[15px] font-medium text-foreground/80 transition hover:bg-muted hover:text-foreground dark:hover:bg-white/10 dark:hover:text-white"
+              >
+                Logout
+              </button>
+              <Link
+                href="/dashboard"
+                className="rounded-xl bg-foreground px-4 py-2 text-[14px] font-semibold text-background transition hover:opacity-90"
+              >
+                Dashboard
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="rounded-xl px-3.5 py-2 text-[15px] font-medium text-foreground/80 transition hover:bg-muted hover:text-foreground dark:hover:bg-white/10 dark:hover:text-white"
+              >
+                Login
+              </Link>
+              <button
+                type="button"
+                onClick={handleActionClick}
+                className="rounded-xl bg-foreground px-4 py-2 text-[14px] font-semibold text-background transition hover:opacity-90"
+              >
+                Get Started
+              </button>
+            </>
+          )}
 
-          {/* Desktop Theme Toggle */}
+          {/* Theme Toggle */}
           {mounted && (
             <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: 0.45,
-                duration: 0.3,
-              }}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
-              onClick={() =>
-                setTheme(theme === "dark" ? "light" : "dark")
-              }
-              className=" ml-2 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-black/50 transition hover:bg-black/5 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-              "
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
@@ -216,20 +217,16 @@ export default function Navbar() {
               )}
             </motion.button>
           )}
-        </motion.div> 
-        
-        {/* mobile */}
+        </div>
+
+        {/* Mobile Controls */}
         <div className="flex items-center gap-2 md:hidden">
-          {/* Mobile Theme Toggle */}
           {mounted && (
             <motion.button
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
-              onClick={() =>
-                setTheme(theme === "dark" ? "light" : "dark")
-              }
-              className=" flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-black/60 transition hover:bg-black/5 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-              "
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
@@ -240,12 +237,10 @@ export default function Navbar() {
             </motion.button>
           )}
 
-          {/* Hamburger */}
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMenuOpen(!menuOpen)}
-            className=" flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-black transition hover:bg-black/5 dark:border-white/20 dark:text-white dark:hover:bg-white/10
-            "
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
           >
@@ -276,70 +271,64 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{
-              opacity: 0,
-              y: -10,
-              scale: 0.98,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-            }}
-            exit={{
-              opacity: 0,
-              y: -10,
-              scale: 0.98,
-            }}
-            transition={{
-              duration: 0.25,
-              ease: "easeOut",
-            }}
-            className=" flex justify-center items-center mt-2 rounded-[22px] border border-black/10 bg-white/90 p-3 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/80 md:hidden
-            "
+            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="mt-2 flex items-center justify-center rounded-[22px] border border-black/10 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/90 md:hidden"
           >
-            <motion.div
-              initial="hidden"
-              animate="show"
-              variants={linksContainer}
-              className="flex flex-col gap-1"
-            >
+            <div className="flex w-full flex-col gap-2">
               {navLinks.map((link) => (
-                <motion.div key={link.name} variants={linkVariants}>
-                  {link.isAction ? (
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="block w-full rounded-xl px-4 py-3 text-center text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
-                    >
-                      {link.name}
-                    </button>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      onClick={closeMenu}
-                      className="block rounded-xl px-4 py-3 text-center text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10 dark:hover:text-white"
-                    >
-                      {link.name}
-                    </Link>
-                  )}
-                </motion.div>
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={closeMenu}
+                  className="rounded-xl px-4 py-2.5 text-center text-sm font-medium text-foreground/80 transition hover:bg-muted"
+                >
+                  {link.name}
+                </Link>
               ))}
 
-              <motion.div variants={linkVariants}>
-                <button
-                  type="button"
-                  onClick={handleGetStarted}
-                  className="w-full rounded-xl border border-primary/20 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-                >
-                  Get Started
-                </button>
-              </motion.div>
-            </motion.div>
+              {isAuthenticated ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    Logout
+                  </button>
+                  <Link
+                    href="/dashboard"
+                    onClick={closeMenu}
+                    className="w-full rounded-xl bg-foreground px-4 py-2.5 text-center text-sm font-semibold text-background transition hover:opacity-90"
+                  >
+                    Go to Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={closeMenu}
+                    className="w-full rounded-xl border border-border px-4 py-2.5 text-center text-sm font-medium text-foreground transition hover:bg-muted"
+                  >
+                    Login
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleActionClick}
+                    className="w-full rounded-xl bg-foreground px-4 py-2.5 text-sm font-semibold text-background transition hover:opacity-90"
+                  >
+                    Get Started
+                  </button>
+                </>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

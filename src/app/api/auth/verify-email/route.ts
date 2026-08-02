@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
+    // check if the token is present in the query parameters
     const { searchParams } = new URL(req.url);
 
     const token = searchParams.get("token");
@@ -17,6 +18,7 @@ export async function GET(req: Request) {
       );
     }
 
+    // check if the token is valid and not expired
     const verificationToken = await prisma.verificationToken.findUnique({
       where: {
         token,
@@ -48,7 +50,7 @@ export async function GET(req: Request) {
         { status: 400 },
       );
     }
-
+//find the user associated with the verification token
     const user = await prisma.user.findUnique({
       where: {
         email: verificationToken.identifier,
@@ -64,7 +66,7 @@ export async function GET(req: Request) {
         { status: 404 },
       );
     }
-
+// update the user's emailVerified field to the current date
     await prisma.user.update({
       where: {
         id: user.id,
@@ -73,7 +75,7 @@ export async function GET(req: Request) {
         emailVerified: new Date(),
       },
     });
-
+// delete the verification token after successful verification
     await prisma.verificationToken.delete({
       where: {
         token,

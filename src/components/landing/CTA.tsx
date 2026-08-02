@@ -3,8 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MoveRight } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function CTA() {
+  const { data: session } = useSession();
+  const isAuthenticated = Boolean(session?.user);
+
   return (
     <section className="border-t border-border px-6 py-24">
       <motion.div
@@ -92,7 +96,7 @@ export default function CTA() {
             className="inline-block"
           >
             <Link
-              href="/"
+              href={isAuthenticated ? "/dashboard" : "/login"}
               className=" flex flex-row gap-2 rounded-md bg-background px-6 py-3 text-sm font-medium text-foreground transition-opacity hover:opacity-80"
             >
               Get Started <MoveRight/>

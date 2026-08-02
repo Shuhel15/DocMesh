@@ -1,27 +1,206 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import Link from "next/link";
+import { Bot, Plus, ArrowRight, MessageSquare } from "lucide-react";
+
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export default async function DashboardPage() {
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
+  const userId = session.user.id;
+
+  // get or create user's company
+  let company = await prisma.company.findFirst({
+    where: {
+      userId,
+    },
+  });
+
+  if (!company) {
+    company = await prisma.company.create({
+      data: {
+        name: session.user.name ? `${session.user.name}'s Company` : "My Company",
+        userId,
+      },
+    });
+  }
+
+  // fetch chatbot count and recent chatbots
+  const [chatbotCount, chatbots] = await Promise.all([
+    prisma.chatbot.count({
+      where: {
+        companyId: company.id,
+      },
+    }),
+    prisma.chatbot.findMany({
+      where: {
+        companyId: company.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 6,
+    }),
+  ]);
+
+  const userName = session.user.name?.split(" ")[0] || "there";
+
   return (
-    <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8 mt-20">
-      <div className="mx-auto flex max-w-3xl flex-col gap-6 rounded-3xl border border-border bg-white/80 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-sm dark:bg-black/30">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            Dashboard
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-forground">
-            Welcome, {session.user.name || session.user.email}
-          </h1>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            Your account is verified and you are now logged in.
-          </p>
+    <main className="min-h-screen bg-background text-foreground pt-28 pb-12">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">Dashboard</p>
+
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+              Welcome back, {userName}
+            </h1>
+
+            <p className="mt-2 text-sm text-muted-foreground">
+              Manage your AI chatbots and knowledge bases from here.
+            </p>
+          </div>
+
+          <Link
+            href="/dashboard/chatbots/new"
+            className="inline-flex w-fit items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition hover:opacity-90"
+          >
+            <Plus size={17} />
+            Create Chatbot
+          </Link>
         </div>
+
+        <section className="mt-8">
+          <div className="rounded-xl border border-border bg-card p-6 sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+                  <Bot size={28} />
+                </div>
+                <div>
+                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Chatbots Overview
+                  </span>
+                  <p className="mt-1 text-4xl font-bold tracking-tight">
+                    {chatbotCount}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Total chatbots in your workspace
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href="/dashboard/chatbots"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+              >
+                View All Chatbots
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-xl border border-border bg-card p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">Your Chatbots</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Quick access to your active AI assistants.
+              </p>
+            </div>
+
+            {chatbots.length > 0 && (
+              <Link
+                href="/dashboard/chatbots"
+                className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
+              >
+                See all ({chatbotCount})
+              </Link>
+            )}
+          </div>
+
+          {chatbots.length === 0 ? (
+            <div className="mt-6 flex min-h-36 items-center justify-center rounded-lg border border-dashed border-border p-8">
+              <div className="text-center">
+                <Bot size={28} className="mx-auto text-muted-foreground" />
+                <p className="mt-3 text-sm font-medium text-foreground">
+                  No chatbots created yet
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Create your first chatbot to start training it with your data.
+                </p>
+                <Link
+                  href="/dashboard/chatbots/new"
+                  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-xs font-medium text-background transition hover:opacity-90"
+                >
+                  <Plus size={15} />
+                  Create Chatbot
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {chatbots.map((chatbot) => (
+                <div
+                  key={chatbot.id}
+                  className="group rounded-xl border border-border bg-background p-5 transition-all hover:border-foreground/40"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-muted text-foreground">
+                      <Bot size={20} />
+                    </div>
+                    <span className="rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                      Active
+                    </span>
+                  </div>
+
+                  <h3 className="mt-4 truncate text-base font-semibold">
+                    {chatbot.name}
+                  </h3>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Created {new Date(chatbot.createdAt).toLocaleDateString()}
+                  </p>
+
+                  <Link
+                    href={`/dashboard/chatbots/${chatbot.id}`}
+                    className="mt-4 flex items-center justify-between rounded-lg border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted"
+                  >
+                    Open Chatbot
+                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="mt-8 rounded-xl border border-border bg-card p-6">
+          <div>
+            <h2 className="text-lg font-semibold">Recent Activity</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Your latest chatbot activity will appear here.
+            </p>
+          </div>
+
+          <div className="mt-6 flex min-h-28 items-center justify-center rounded-lg border border-dashed border-border">
+            <div className="text-center">
+              <MessageSquare size={22} className="mx-auto text-muted-foreground" />
+              <p className="mt-2 text-sm font-medium text-muted-foreground">
+                No recent activity
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Activity will appear when users interact with your chatbots.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

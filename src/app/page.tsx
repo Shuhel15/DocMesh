@@ -7,6 +7,7 @@ import HowItWorks from "@/components/landing/HowItWorks";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 import { MoveRight } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 const containerVariants: Variants = {
   hidden: {},
@@ -33,6 +34,9 @@ const itemVariants: Variants = {
 };
 
 export default function Home() {
+  const { data: session } = useSession();
+  const isAuthenticated = Boolean(session?.user);
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Hero */}
@@ -101,7 +105,7 @@ export default function Home() {
           >
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
               <Link
-                href="/"
+                href={isAuthenticated ? "/dashboard" : "/login"}
                 className="inline-block rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Build Your Chatbot
@@ -110,7 +114,7 @@ export default function Home() {
 
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
               <Link
-                href="#features"
+                href="/#how-it-works"
                 className="flex flex-row items-center justify-center gap-2 rounded-md border border-border px-6 py-3 font-medium transition-colors hover:bg-muted"
               >
                 Learn More
