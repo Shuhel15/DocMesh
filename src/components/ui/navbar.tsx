@@ -112,36 +112,8 @@ export default function Navbar() {
             onClick={closeMenu}
             className="text-xl font-bold tracking-tight text-foreground"
           >
-            <span className="relative inline-block">
-              KNOWLY
-              <motion.svg
-                initial={{ opacity: 0, pathLength: 0 }}
-                animate={{ opacity: 1, pathLength: 1 }}
-                transition={{
-                  delay: 0.5,
-                  duration: 0.7,
-                  ease: "easeInOut",
-                }}
-                className="pointer-events-none absolute -bottom-3 left-0 h-3 w-full"
-                viewBox="0 0 200 12"
-                fill="none"
-                preserveAspectRatio="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M2 7 C35 3 65 9 100 6 S165 3 198 7"
-                  stroke="currentColor"
-                  strokeWidth="5"
-                  strokeLinecap="round"
-                  opacity="0.25"
-                />
-                <path
-                  d="M2 6 C35 2 65 8 100 5 S165 2 198 6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </motion.svg>
+            <span className="relative inline-block text-3xl">
+            𝕂
             </span>
           </Link>
         </motion.div>
@@ -240,7 +212,7 @@ export default function Navbar() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
+            className="flex h-9 w-9 items-center justify-center  text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
           >

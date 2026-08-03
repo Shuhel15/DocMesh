@@ -129,7 +129,7 @@ export default function ChatbotsPage() {
                       <Bot size={22} />
                     </div>
 
-                    <span className="rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                    <span className="rounded-full border border-border dark:bg-green-600 bg-green-500 text-white px-2.5 py-1 text-xs font-medium ">
                       Active
                     </span>
                   </div>

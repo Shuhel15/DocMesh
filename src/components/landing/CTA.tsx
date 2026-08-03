@@ -97,9 +97,9 @@ export default function CTA() {
           >
             <Link
               href={isAuthenticated ? "/dashboard" : "/login"}
-              className=" flex flex-row gap-2 rounded-md bg-background px-6 py-3 text-sm font-medium text-foreground transition-opacity hover:opacity-80"
+              className="group flex flex-row  items-center justify-center gap-2 rounded-md bg-background px-6 py-3 text-sm font-medium text-foreground transition-opacity hover:opacity-80"
             >
-              Get Started <MoveRight/>
+              Get Started <MoveRight size={16} className="transition-transform group-hover:translate-x-1"/>
             </Link>
           </motion.div>
         </motion.div>

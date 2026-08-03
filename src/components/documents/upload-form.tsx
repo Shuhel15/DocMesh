@@ -61,10 +61,10 @@ export default function UploadForm({
   return (
     <div className="mt-6 rounded-lg border border-border p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <label className="flex-1 cursor-pointer rounded-lg border border-dashed border-border p-4 text-center transition hover:bg-muted">
+        <label className="group flex-1 cursor-pointer rounded-lg border border-dashed border-border p-4 text-center transition hover:bg-muted">
           <Upload
             size={20}
-            className="mx-auto mb-2 text-muted-foreground"
+            className="mx-auto mb-2 text-muted-foreground transition-transform group-hover:-translate-y-1"
           />
 
           <p className="text-sm font-medium">
@@ -95,7 +95,7 @@ export default function UploadForm({
           type="button"
           onClick={handleUpload}
           disabled={!file || uploading}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-5 py-3 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="group inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-5 py-3 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {uploading ? (
             <>
@@ -104,7 +104,7 @@ export default function UploadForm({
             </>
           ) : (
             <>
-              <Upload size={16} />
+              <Upload size={16} className="transition-transform group-hover:-translate-y-1" />
               Upload
             </>
           )}

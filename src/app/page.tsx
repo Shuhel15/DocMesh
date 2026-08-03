@@ -6,7 +6,7 @@ import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { MoveRight } from "lucide-react";
+import { Bot, MoveRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 const containerVariants: Variants = {
@@ -53,8 +53,9 @@ export default function Home() {
         >
           <motion.p
             variants={itemVariants}
-            className="mx-auto mb-4 w-fit border-b-2 text-center text-sm font-medium text-muted-foreground"
+            className="mx-auto flex flex-row items-center justify-center gap-1 mb-4 w-fit border-b-2  text-center text-sm font-medium text-muted-foreground"
           >
+            <Bot size={19}  className="text-green-500 animate-pulse mb-0.5"/>
             AI Chatbot Platform
           </motion.p>
 
@@ -115,10 +116,10 @@ export default function Home() {
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
               <Link
                 href="/#how-it-works"
-                className="flex flex-row items-center justify-center gap-2 rounded-md border border-border px-6 py-3 font-medium transition-colors hover:bg-muted"
+                className="group flex flex-row items-center justify-center gap-2 rounded-md border border-border px-6 py-3 font-medium transition-colors hover:bg-muted"
               >
                 Learn More
-                <MoveRight size={16} />
+                <MoveRight size={16} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </motion.div>
           </motion.div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
+import { FaHeart } from "react-icons/fa";
 
 const footerLinks = {
   Product: ["Features", "How It Works"],
@@ -49,7 +50,7 @@ export default function Footer() {
               whileHover={{ x: 3 }}
               className="inline-block text-lg font-bold tracking-tight"
             >
-              KNOWLY
+              𝕂
             </motion.h3>
 
             <p className="mt-3 max-w-xs text-sm leading-6 text-muted-foreground">
@@ -95,6 +96,13 @@ export default function Footer() {
           className="mt-12 flex flex-col items-center justify-center gap-4 border-t border-border pt-6 text-center text-sm text-muted-foreground sm:flex-row sm:justify-between"
         >
           <p>© {new Date().getFullYear()} Knowly. All rights reserved.</p>
+          <p className="items-center text-center justify-center">
+            Made with 
+            <span className="mx-1 inline-flex items-center justify-center text-center animate-pulse gap-1 text-red-500">
+              <FaHeart />
+            </span> 
+             by Shuhel Ahmed
+          </p>
 
           <div className="flex gap-5">
             <motion.a

@@ -1,11 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Bot,
-  FileText,
-  Code2,
-} from "lucide-react";
+import { ArrowLeft, Bot, FileText, Code2 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -70,9 +65,12 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
       <div className="mx-auto max-w-5xl">
         <Link
           href="/dashboard/chatbots"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground mb-6"
+          className="group inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground mb-6"
         >
-          <ArrowLeft size={16} className="hover:transition-transform hover:translate-x-11" />
+          <ArrowLeft
+            size={16}
+            className="transition-transform group-hover:-translate-x-1"
+          />
           Back to Chatbots
         </Link>
 
@@ -86,7 +84,9 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                 {chatbot.name}
               </h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Created on {new Date(chatbot.createdAt).toLocaleDateString()} <br/>ID: {chatbot.id}
+                Created on {new Date(chatbot.createdAt).toLocaleDateString()}{" "}
+                <br />
+                ID: {chatbot.id}
               </p>
             </div>
           </div>
@@ -100,7 +100,6 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
 
         {/* Content Section */}
         <div className="mt-8 grid gap-8 md:grid-cols-3">
-
           <div className="md:col-span-2 space-y-6">
             <div className="rounded-xl border border-border bg-card p-6">
               <div className="flex items-center justify-between mb-4">
@@ -114,7 +113,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                   </p>
                 </div>
               </div>
-              
+
               {/* file upload */}
               <UploadForm chatbotId={chatbot.id} />
               {/* manula text area  */}
@@ -122,20 +121,28 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
 
               {chatbot.documents.length === 0 ? (
                 <div className="rounded-lg border border-dashed border-border p-8 text-center mt-4">
-                  <FileText size={28} className="mx-auto text-muted-foreground mb-2" />
+                  <FileText
+                    size={28}
+                    className="mx-auto text-muted-foreground mb-2"
+                  />
                   <p className="text-sm font-medium">No documents added yet</p>
                   <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                    Upload documents (PDF, TXT, DOCX) to train this chatbot with your specific business data.
+                    Upload documents (PDF, TXT, DOCX) to train this chatbot with
+                    your specific business data.
                   </p>
                 </div>
               ) : (
                 <div className="divide-y divide-border mt-4">
                   {chatbot.documents.map((doc) => (
-                    <div key={doc.id} className="py-3 flex items-center justify-between">
+                    <div
+                      key={doc.id}
+                      className="py-3 flex items-center justify-between"
+                    >
                       <div>
                         <p className="text-sm font-medium">{doc.name}</p>
                         <p className="text-xs text-muted-foreground">
-                         Type: {doc.type} <br/>Date: {new Date(doc.createdAt).toLocaleDateString()}
+                          Type: {doc.type} <br />
+                          Date: {new Date(doc.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -144,15 +151,22 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
               )}
             </div>
 
-
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-xl border border-border bg-card p-5">
-                <p className="text-xs text-muted-foreground">Total Conversations</p>
-                <p className="text-2xl font-bold mt-2">{chatbot._count.conversations}</p>
+                <p className="text-xs text-muted-foreground">
+                  Total Conversations
+                </p>
+                <p className="text-2xl font-bold mt-2">
+                  {chatbot._count.conversations}
+                </p>
               </div>
               <div className="rounded-xl border border-border bg-card p-5">
-                <p className="text-xs text-muted-foreground">Knowledge Chunks</p>
-                <p className="text-2xl font-bold mt-2">{chatbot._count.chunks}</p>
+                <p className="text-xs text-muted-foreground">
+                  Knowledge Chunks
+                </p>
+                <p className="text-2xl font-bold mt-2">
+                  {chatbot._count.chunks}
+                </p>
               </div>
             </div>
           </div>
@@ -165,7 +179,8 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                 Embed Code
               </h2>
               <p className="text-xs text-muted-foreground mb-4">
-                Paste this snippet into your HTML before the ending &lt;/body&gt; tag.
+                Paste this snippet into your HTML before the ending
+                &lt;/body&gt; tag.
               </p>
 
               <div className="relative rounded-lg bg-muted p-3 text-xs font-mono break-all text-foreground border border-border">
