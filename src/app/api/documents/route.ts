@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { extractText } from "@/lib/documents/extract-text";
 import { chunkText } from "@/lib/rag/chunk";
+import { generateEmbedding } from "@/lib/rag/embeddings";
+import { Prisma } from "@/generated/prisma/client";
 
 const ALLOWED_FILE_TYPES = ["pdf", "txt", "doc", "docx"];
 
@@ -105,14 +106,38 @@ export async function POST(request: Request) {
         },
       });
 
-      //temporary for testing chunking
+      //chunk the content
       const chunks = chunkText(content);
 
-      console.log("CHUNK TEST");
-      console.log("Total chunks:", chunks.length);
-      console.log("First chunk:", chunks[0]);
-      console.log("Last chunk:", chunks[chunks.length - 1]);
-      
+      // Generate embeddings and store all chunks
+      for (let i = 0; i < chunks.length; i++) {
+        const chunkContent = chunks[i];
+
+        // Generate embedding for current chunk
+        const embedding = await generateEmbedding(chunkContent);
+
+        // Convert embedding array to PostgreSQL vector format
+        const embeddingString = `[${embedding.join(",")}]`;
+
+        // Store chunk + embedding in PostgreSQL
+        await prisma.$queryRaw(
+          Prisma.sql`
+      INSERT INTO "DocumentChunk"
+        ("id", "content", "chunkIndex", "documentId", "chatbotId", "embedding")
+      VALUES
+        (
+          ${crypto.randomUUID()},
+          ${chunkContent},
+          ${i},
+          ${document.id},
+          ${chatbot.id},
+          ${embeddingString}::vector
+        )
+    `,
+        );
+      }
+
+      console.log("ALL CHUNKS EMBEDDING + STORAGE DONE");
 
       return NextResponse.json(
         {
@@ -164,14 +189,37 @@ export async function POST(request: Request) {
         },
       });
 
-
-      //temporary for testing chunking
+      //chunk the manual content typed by user
       const chunks = chunkText(manualContent.trim());
 
-      console.log("MANUAL CHUNK TEST");
-      console.log("Total chunks:", chunks.length);
-      console.log("First chunk:", chunks[0]);
-      console.log("Last chunk:", chunks[chunks.length - 1]);
+      for (let i = 0; i < chunks.length; i++) {
+        const chunkContent = chunks[i];
+
+        // Generate embedding
+        const embedding = await generateEmbedding(chunkContent);
+
+        // Convert embedding to PostgreSQL vector format
+        const embeddingString = `[${embedding.join(",")}]`;
+
+        // Store chunk + embedding
+        await prisma.$queryRaw(
+          Prisma.sql`
+      INSERT INTO "DocumentChunk"
+        ("id", "content", "chunkIndex", "documentId", "chatbotId", "embedding")
+      VALUES
+        (
+          ${crypto.randomUUID()},
+          ${chunkContent},
+          ${i},
+          ${document.id},
+          ${chatbot.id},
+          ${embeddingString}::vector
+        )
+    `,
+        );
+      }
+
+      console.log("ALL MANUAL CHUNKS EMBEDDING + STORAGE DONE");
 
       return NextResponse.json(
         {
