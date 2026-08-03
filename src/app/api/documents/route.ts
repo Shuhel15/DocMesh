@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { extractText } from "@/lib/documents/extract-text";
+import { chunkText } from "@/lib/rag/chunk";
 
 const ALLOWED_FILE_TYPES = ["pdf", "txt", "doc", "docx"];
 
@@ -104,6 +105,15 @@ export async function POST(request: Request) {
         },
       });
 
+      //temporary for testing chunking
+      const chunks = chunkText(content);
+
+      console.log("CHUNK TEST");
+      console.log("Total chunks:", chunks.length);
+      console.log("First chunk:", chunks[0]);
+      console.log("Last chunk:", chunks[chunks.length - 1]);
+      
+
       return NextResponse.json(
         {
           message: "Document uploaded successfully",
@@ -153,6 +163,15 @@ export async function POST(request: Request) {
           chatbotId: chatbot.id,
         },
       });
+
+
+      //temporary for testing chunking
+      const chunks = chunkText(manualContent.trim());
+
+      console.log("MANUAL CHUNK TEST");
+      console.log("Total chunks:", chunks.length);
+      console.log("First chunk:", chunks[0]);
+      console.log("Last chunk:", chunks[chunks.length - 1]);
 
       return NextResponse.json(
         {
