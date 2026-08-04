@@ -8,6 +8,7 @@ import ManualTextForm from "@/components/documents/manual-text-form";
 import ChatPreview from "@/components/chatbot/chat-preview";
 import DeleteDocumentButton from "@/components/documents/delete-document-button";
 import EditDocumentModal from "@/components/documents/edit-document-modal";
+import EmbedCode from "@/components/chatbot/embed-code";
 
 interface ChatbotPageProps {
   params: Promise<{
@@ -60,7 +61,12 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
     notFound();
   }
 
-  const embedScript = `<script src="${process.env.NEXTAUTH_URL || "https://knowly.ai"}/embed.js" data-chatbot-id="${chatbot.id}" defer></script>`;
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+
+  const embedScript = `<script
+  src="${baseUrl}/embed/chatbot.js"
+  data-bot-id="${chatbot.id}"
+></script>`;
 
   return (
     <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6">
@@ -150,8 +156,6 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                         <p className="text-xs text-muted-foreground">
                           Type: {doc.type} <br />
                           Date: {new Date(doc.createdAt).toLocaleDateString()}
-                          <br/>
-                          ID: {doc.id}
                         </p>
                       </div>
 
@@ -207,9 +211,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                 &lt;/body&gt; tag.
               </p>
 
-              <div className="relative rounded-lg bg-muted p-3 text-xs font-mono break-all text-foreground border border-border">
-                {embedScript}
-              </div>
+             <EmbedCode code={embedScript} />
             </div>
           </div>
         </div>

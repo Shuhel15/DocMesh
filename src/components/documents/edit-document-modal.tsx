@@ -73,9 +73,9 @@ export default function EditDocumentModal({
 
       setIsOpen(false);
       window.location.reload();
-    } catch (err) {
+    } catch (error) {
       setError(
-        err instanceof Error ? err.message : "Something went wrong"
+        error instanceof Error ? error.message : "Something went wrong"
       );
     } finally {
       setIsSaving(false);

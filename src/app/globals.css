@@ -126,5 +126,9 @@
   html {
   scroll-behavior: smooth;
 }
+html,
+body {
+  background: transparent !important;
+}
 
 }

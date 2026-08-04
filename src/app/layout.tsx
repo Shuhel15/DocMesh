@@ -4,8 +4,7 @@ import { SessionProvider } from "next-auth/react";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import Navbar from "@/components/ui/navbar";
-import Footer from "@/components/ui/Footer";
+import LayoutShell from "@/components/ui/layout-shell";
 
 
 const spaceGrotesk = Space_Grotesk({
@@ -33,9 +32,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
-            {children}
-            <Footer />
+            <LayoutShell> {children}</LayoutShell>
+           
           </ThemeProvider>
         </SessionProvider>
       </body>

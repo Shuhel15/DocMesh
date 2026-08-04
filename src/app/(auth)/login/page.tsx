@@ -92,7 +92,7 @@ function LoginContent() {
         router.replace("/dashboard");
       }
     } catch (error) {
-      console.error("LOGIN_ERROR:", error);
+      console.error("LOGIN ERROR:", error);
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);

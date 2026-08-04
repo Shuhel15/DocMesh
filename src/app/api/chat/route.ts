@@ -7,36 +7,23 @@ import { generateAnswer } from "@/lib/rag/generate";
 
 export async function POST(request: Request) {
   try {
-    // checking if the user is authenticated or not
+    // Authentication is optional .dashboard users will have a session .external visitors will not.
+
     const session = await auth();
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 },
-      );
-    }
-
-    // reading request body
+    // Reading request body
     const body = await request.json();
 
     const chatbotId =
-      typeof body.chatbotId === "string"
-        ? body.chatbotId.trim()
-        : "";
+      typeof body.chatbotId === "string" ? body.chatbotId.trim() : "";
 
     const question =
-      typeof body.question === "string"
-        ? body.question.trim()
-        : "";
+      typeof body.question === "string" ? body.question.trim() : "";
 
     const conversationId =
-      typeof body.conversationId === "string"
-        ? body.conversationId.trim()
-        : "";
+      typeof body.conversationId === "string" ? body.conversationId.trim() : "";
 
-
-    // validation
+    // Validation
     if (!chatbotId || !question) {
       return NextResponse.json(
         {
@@ -48,14 +35,10 @@ export async function POST(request: Request) {
       );
     }
 
-
-    // checking chatbot ownership
-    const chatbot = await prisma.chatbot.findFirst({
+    // Check if chatbot exists
+    const chatbot = await prisma.chatbot.findUnique({
       where: {
         id: chatbotId,
-        company: {
-          userId: session.user.id,
-        },
       },
       select: {
         id: true,
@@ -63,11 +46,10 @@ export async function POST(request: Request) {
       },
     });
 
-
     if (!chatbot) {
       return NextResponse.json(
         {
-          error: "Chatbot not found or does not belong to the user",
+          error: "Chatbot not found",
         },
         {
           status: 404,
@@ -75,30 +57,28 @@ export async function POST(request: Request) {
       );
     }
 
-
-    // create or get conversation
+    // Create or get conversation
     let conversation;
 
     if (conversationId) {
-      conversation = await prisma.conversation.findUnique({
+      conversation = await prisma.conversation.findFirst({
         where: {
           id: conversationId,
+          chatbotId,
         },
       });
     }
-
 
     if (!conversation) {
       conversation = await prisma.conversation.create({
         data: {
           chatbotId,
-          userId: session.user.id,
+          userId: session?.user?.id ?? null,
         },
       });
     }
 
-
-    // save user message
+    // Save user message
     await prisma.message.create({
       data: {
         role: "user",
@@ -107,23 +87,13 @@ export async function POST(request: Request) {
       },
     });
 
+    // Retrieve relevant chunks
+    const chunks = await retrieveRelevantChunks(question, chatbotId, 5);
 
-    // retrieve relevant chunks
-    const chunks = await retrieveRelevantChunks(
-      question,
-      chatbotId,
-      5,
-    );
+    // Generate answer
+    const answer = await generateAnswer(question, chunks);
 
-
-    // generate answer
-    const answer = await generateAnswer(
-      question,
-      chunks,
-    );
-
-
-    // save assistant message
+    // Save assistant message
     await prisma.message.create({
       data: {
         role: "assistant",
@@ -132,25 +102,21 @@ export async function POST(request: Request) {
       },
     });
 
-
-    // prepare sources
+    // Prepare sources
     const sources = chunks.map((chunk) => ({
       documentId: chunk.documentId,
       documentName: chunk.documentName,
       chunkIndex: chunk.chunkIndex,
     }));
 
-
-    // return response
+    // Return response
     return NextResponse.json({
       conversationId: conversation.id,
       answer,
       sources,
     });
-
-
   } catch (error) {
-    console.error("CHAT_API_ERROR:", error);
+    console.error("CHAT API ERROR:", error);
 
     return NextResponse.json(
       {

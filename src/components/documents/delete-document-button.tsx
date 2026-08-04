@@ -40,7 +40,7 @@ export default function DeleteDocumentButton({
       // Refresh server component data
       window.location.reload();
     } catch (error) {
-      console.error("DELETE_DOCUMENT_ERROR:", error);
+      console.error("DELETE DOCUMENT ERROR:", error);
 
       alert(
         error instanceof Error

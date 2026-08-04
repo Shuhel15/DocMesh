@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
-interface Message {
+export interface Message {
+  id?: string;
   role: "user" | "assistant";
   content: string;
+  timestamp?: string;
 }
 
-interface ChatResponse {
+export interface ChatResponse {
   answer: string;
   conversationId: string;
+  sources?: Array<{
+    documentId: string;
+    documentName: string;
+    chunkIndex: number;
+  }>;
 }
 
 export function useChat(chatbotId: string) {
@@ -18,68 +25,86 @@ export function useChat(chatbotId: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sendMessage = async (question: string) => {
-    const trimmedQuestion = question.trim();
+  const sendMessage = useCallback(
+    async (question: string) => {
+      const trimmedQuestion = question.trim();
 
-    // Don't send empty messages or if a request is already in progress
-    if (!trimmedQuestion || isLoading) return;
+      if (!trimmedQuestion || isLoading) return;
 
-    setError(null);
+      setError(null);
 
-    //add user message immediately
-    setMessages((prev) => [
-      ...prev,
-      {
+      const userMsg: Message = {
+        id: Date.now().toString(),
         role: "user",
         content: trimmedQuestion,
-      },
-    ]);
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chatbotId,
-          conversationId,
-          question: trimmedQuestion,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
         }),
-      });
+      };
 
-      const data = await response.json();
+      setMessages((prev) => [...prev, userMsg]);
+      setIsLoading(true);
 
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
-      }
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chatbotId,
+            conversationId,
+            question: trimmedQuestion,
+          }),
+        });
 
-      const result: ChatResponse = data;
+        const data = await response.json();
 
-      // Save conversation id for next message
-      setConversationId(result.conversationId);
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch response");
+        }
 
-      // assistant response
-      setMessages((prev) => [
-        ...prev,
-        {
+        const result: ChatResponse = data;
+
+        setConversationId(result.conversationId);
+
+        const assistantMsg: Message = {
+          id: (Date.now() + 1).toString(),
           role: "assistant",
           content: result.answer,
-        },
-      ]);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Something went wrong");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+
+        setMessages((prev) => [...prev, assistantMsg]);
+      } catch (err) {
+        console.error("CHAT_ERROR:", err);
+        setError(
+          err instanceof Error ? err.message : "Something went wrong. Please try again."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [chatbotId, conversationId, isLoading]
+  );
+
+  const resetChat = useCallback(() => {
+    setMessages([]);
+    setConversationId(null);
+    setError(null);
+  }, []);
 
   return {
     messages,
     sendMessage,
+    resetChat,
     isLoading,
     error,
+    conversationId,
   };
 }
+
