@@ -136,7 +136,8 @@ export default function ManualTextForm({
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50
+          hover:scale-105 ease-in-out duration-200"
         >
           {saving ? (
             <>

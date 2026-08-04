@@ -1,11 +1,11 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Bot, FileText, Code2 } from "lucide-react";
-
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import UploadForm from "@/components/documents/upload-form";
 import ManualTextForm from "@/components/documents/manual-text-form";
+import ChatPreview from "@/components/chatbot/chat-preview";
 
 interface ChatbotPageProps {
   params: Promise<{
@@ -92,9 +92,11 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="rounded-full border border-border text-white bg-green-500 dark:bg-green-600 px-3 py-1 text-xs font-medium ">
+            <span className="rounded-full border border-border text-white bg-green-500 dark:bg-green-600 px-3 py-1 text-xs font-medium">
               Active
             </span>
+
+            <ChatPreview chatbotId={chatbot.id} chatbotName={chatbot.name} />
           </div>
         </div>
 
