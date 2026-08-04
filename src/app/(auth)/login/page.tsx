@@ -1,10 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { getSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
@@ -26,7 +25,6 @@ const panelVariants: Variants = {
     transition: { duration: 0.55, ease: "easeOut" },
   },
 };
-
 
 const formVariants: Variants = {
   hidden: { opacity: 0, x: 24 },
@@ -61,7 +59,6 @@ function LoginContent() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
-  const [checkingSession, setCheckingSession] = useState(true);
 
   const successMessage =
     searchParams.get("verified") === "true"
@@ -117,31 +114,6 @@ function LoginContent() {
     }
   };
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const session = await getSession();
-
-      if (session) {
-        router.replace("/dashboard");
-        return;
-      }
-
-      setCheckingSession(false);
-    };
-
-    checkSession();
-  }, [router]);
-
-  if (checkingSession) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader />
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8 mt-10 ">
       <motion.div
@@ -196,7 +168,6 @@ function LoginContent() {
                 >
                   <span className="mr-2 inline-flex items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
                     <FcGoogle />
-
                   </span>
 
                   {googleLoading ? "Connecting..." : "Continue with Google"}

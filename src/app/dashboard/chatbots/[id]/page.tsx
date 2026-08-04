@@ -6,6 +6,8 @@ import prisma from "@/lib/prisma";
 import UploadForm from "@/components/documents/upload-form";
 import ManualTextForm from "@/components/documents/manual-text-form";
 import ChatPreview from "@/components/chatbot/chat-preview";
+import DeleteDocumentButton from "@/components/documents/delete-document-button";
+import EditDocumentModal from "@/components/documents/edit-document-modal";
 
 interface ChatbotPageProps {
   params: Promise<{
@@ -138,14 +140,34 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                   {chatbot.documents.map((doc) => (
                     <div
                       key={doc.id}
-                      className="py-3 flex items-center justify-between"
+                      className="py-3 flex items-center justify-between gap-4"
                     >
-                      <div>
-                        <p className="text-sm font-medium">{doc.name}</p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {doc.name}
+                        </p>
+
                         <p className="text-xs text-muted-foreground">
                           Type: {doc.type} <br />
                           Date: {new Date(doc.createdAt).toLocaleDateString()}
+                          <br/>
+                          ID: {doc.id}
                         </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {doc.type === "text" && (
+                          <EditDocumentModal
+                            documentId={doc.id}
+                            chatbotId={chatbot.id}
+                            initialTitle={doc.name}
+                            initialContent={doc.content || ""}
+                          />
+                        )}
+                        <DeleteDocumentButton
+                          documentId={doc.id}
+                          chatbotId={chatbot.id}
+                        />
                       </div>
                     </div>
                   ))}

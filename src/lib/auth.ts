@@ -53,6 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email,
           },
         });
+
         // if user is not found or password is not set, return null
         if (!user || !user.password) {
           return null;
@@ -83,12 +84,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user?.id) {
         token.id = user.id;
       }
+
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = (token.id as string) || (token.sub as string);
       }
+
       return session;
     },
   },

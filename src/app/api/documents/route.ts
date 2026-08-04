@@ -259,3 +259,247 @@ export async function POST(request: Request) {
     );
   }
 }
+
+//Delete function for documents. This will also delete all related chunks in the DocumentChunk table
+export async function DELETE(request: Request) {
+  try {
+    // Check authentication
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    // Get document ID and chatbot ID
+    const { searchParams } = new URL(request.url);
+
+    const documentId = searchParams.get("id");
+    const chatbotId = searchParams.get("chatbotId");
+
+    if (!documentId || !chatbotId) {
+      return NextResponse.json(
+        {
+          error: "Document ID and chatbot ID are required",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // Find document and verify:
+    // 1. Document belongs to requested chatbot
+    // 2. Chatbot belongs to logged-in user
+    const document = await prisma.document.findFirst({
+      where: {
+        id: documentId,
+        chatbotId,
+        chatbot: {
+          company: {
+            userId: session.user.id,
+          },
+        },
+      },
+    });
+
+    if (!document) {
+      return NextResponse.json(
+        {
+          error: "Document not found or access denied",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
+    // Delete related chunks first
+    await prisma.documentChunk.deleteMany({
+      where: {
+        documentId: document.id,
+      },
+    });
+
+    // Delete document
+    await prisma.document.delete({
+      where: {
+        id: document.id,
+      },
+    });
+
+    return NextResponse.json({
+      message: "Document deleted successfully",
+    });
+  } catch (error) {
+    console.error("DOCUMENT_DELETE_ERROR:", error);
+
+    return NextResponse.json(
+      {
+        error: "Failed to delete document",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+// Edit manula text content of a document. This will also update the chunks in the DocumentChunk table
+export async function PUT(request: Request) {
+  try {
+    // Check authentication
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    const body = await request.json();
+
+    const documentId = body.documentId;
+    const chatbotId = body.chatbotId;
+    const title = body.title;
+    const content = body.content;
+
+    // Validate IDs
+    if (typeof documentId !== "string" || typeof chatbotId !== "string") {
+      return NextResponse.json(
+        {
+          error: "Document ID and chatbot ID are required",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // Validate title and content
+    if (typeof title !== "string" || !title.trim()) {
+      return NextResponse.json(
+        {
+          error: "Title is required",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    if (typeof content !== "string" || !content.trim()) {
+      return NextResponse.json(
+        {
+          error: "Content is required",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // Find document and verify ownership
+    const document = await prisma.document.findFirst({
+  where: {
+    id: documentId,
+    chatbotId,
+    type: "text",
+    chatbot: {
+      company: {
+        userId: session.user.id,
+      },
+    },
+  },
+});
+
+    if (!document) {
+      return NextResponse.json(
+        {
+          error: "Document not found or access denied",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
+
+    // Delete old chunks
+    await prisma.documentChunk.deleteMany({
+      where: {
+        documentId: document.id,
+      },
+    });
+
+    // Update document
+    const updatedDocument = await prisma.document.update({
+      where: {
+        id: document.id,
+      },
+      data: {
+        name: title.trim(),
+        content: content.trim(),
+      },
+    });
+
+    // Create new chunks
+    const chunks = chunkText(content.trim());
+
+    // Generate embeddings and save new chunks
+    for (let i = 0; i < chunks.length; i++) {
+      const chunkContent = chunks[i];
+
+      const embedding = await generateEmbedding(chunkContent);
+
+      const embeddingString = `[${embedding.join(",")}]`;
+
+      await prisma.$queryRaw(
+        Prisma.sql`
+          INSERT INTO "DocumentChunk"
+            ("id", "content", "chunkIndex", "documentId", "chatbotId", "embedding")
+          VALUES
+            (
+              ${crypto.randomUUID()},
+              ${chunkContent},
+              ${i},
+              ${document.id},
+              ${chatbotId},
+              ${embeddingString}::vector
+            )
+        `,
+      );
+    }
+
+    return NextResponse.json({
+      message: "Manual knowledge updated successfully",
+      document: {
+        id: updatedDocument.id,
+        name: updatedDocument.name,
+        type: updatedDocument.type,
+        createdAt: updatedDocument.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("DOCUMENT_UPDATE_ERROR:", error);
+
+    return NextResponse.json(
+      {
+        error: "Failed to update document",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+}
