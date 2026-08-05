@@ -1,5 +1,7 @@
 (function () {
-  const script = document.currentScript;
+  const script =
+    document.currentScript ||
+    document.querySelector("script[data-bot-id]");
 
   if (!script) {
     console.error("Knowly: Embed script element not found.");
@@ -9,18 +11,22 @@
   const botId = script.getAttribute("data-bot-id");
 
   if (!botId) {
-    console.error("Knowly: data-bot-id is required on embed script.");
+    console.error("Knowly: data-bot-id is required.");
     return;
   }
 
-  const origin = new URL(script.src).origin;
+  let origin = window.location.origin;
+
+  try {
+    origin = new URL(script.src, document.baseURI).origin;
+  } catch {}
+
   const iframe = document.createElement("iframe");
 
   iframe.src = `${origin}/embed/${encodeURIComponent(botId)}`;
   iframe.title = "Knowly Chatbot Widget";
   iframe.allow = "clipboard-write";
 
-  // Base styles for external widget container iframe
   Object.assign(iframe.style, {
     position: "fixed",
     bottom: "16px",
@@ -28,30 +34,33 @@
     width: "80px",
     height: "80px",
     border: "none",
-    zIndex: "999999",
+    borderRadius: "32px",
     background: "transparent",
-    colorScheme: "light",
-    transition: "width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease",
     overflow: "hidden",
+    zIndex: "999999",
+    colorScheme: "light",
+    transition:
+      "width 0.3s cubic-bezier(0.16,1,0.3,1), height 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.2s ease",
   });
 
   document.body.appendChild(iframe);
 
-  window.addEventListener("message", (event) => {
-    if (event.origin !== origin) {
+  window.addEventListener("message", ({ origin: eventOrigin, source, data }) => {
+    if (
+      eventOrigin !== origin ||
+      source !== iframe.contentWindow ||
+      data?.type !== "KNOWLY_CHATBOT_RESIZE"
+    ) {
       return;
     }
 
-    if (event.data?.type !== "KNOWLY_CHATBOT_RESIZE") {
-      return;
-    }
-
-    if (event.data.isOpen) {
-      iframe.style.width = "min(420px, calc(100vw - 24px))";
-      iframe.style.height = "min(660px, calc(100vh - 32px))";
-    } else {
-      iframe.style.width = "80px";
-      iframe.style.height = "80px";
-    }
+    Object.assign(iframe.style, {
+      width: data.isOpen
+        ? "min(420px, calc(100vw - 24px))"
+        : "80px",
+      height: data.isOpen
+        ? "min(660px, calc(100vh - 32px))"
+        : "80px",
+    });
   });
 })();
