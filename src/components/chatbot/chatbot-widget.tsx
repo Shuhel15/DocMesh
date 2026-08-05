@@ -1,11 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Bot, Send, User, X, MessageCircle } from "lucide-react";
+import { Bot, User, X, MessageCircle, MoveUp } from "lucide-react";
 
 type ChatbotWidgetProps = {
   botId: string;
   chatbotName: string;
+  theme: "black" | "white";
 };
 
 type Message = {
@@ -16,6 +17,7 @@ type Message = {
 export default function ChatbotWidget({
   botId,
   chatbotName,
+  theme,
 }: ChatbotWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -29,6 +31,8 @@ export default function ChatbotWidget({
       content: "Hello! How can I help you?",
     },
   ]);
+
+  const isBlack = theme === "black";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -83,7 +87,9 @@ export default function ChatbotWidget({
     } catch (error) {
       console.error("EMBED_CHAT_ERROR:", error);
 
-      setError(error instanceof Error ? error.message : "Something went wrong");
+      setError(
+        error instanceof Error ? error.message : "Something went wrong",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -115,18 +121,30 @@ export default function ChatbotWidget({
 
   return (
     <div className="fixed inset-0 bg-transparent">
+      {/* Chat Window */}
       {isOpen && (
-        <div className="absolute bottom-0 right-0 w-full max-w-105 h-full max-h-165 flex flex-col overflow-hidden rounded-[18px] bg-black text-white shadow-[0_20px_80px_rgba(0,0,0,0.45)] border border-white/10">
+        <div
+          className={`absolute bottom-0 right-0 w-full max-w-105 h-full max-h-165 flex flex-col overflow-hidden rounded-[18px] shadow-[0_20px_80px_rgba(0,0,0,0.45)] border ${
+            isBlack
+              ? "bg-black text-white border-white/10"
+              : "bg-white text-zinc-900 border-zinc-200"
+          }`}
+        >
           {/* Header */}
-          <div className="bg-zinc-900 relative z-10 flex items-center justify-between px-5 py-4">
+          <div
+            className={`relative z-10 flex items-center justify-between px-5 py-4 border-b ${
+              isBlack
+                ? "bg-zinc-900 border-white/10"
+                : "bg-white border-zinc-200"
+            }`}
+          >
             <div className="flex items-center gap-3">
               <div
-                className="
-                  flex size-9 items-center justify-center
-                  rounded-lg
-                  border border-white/10
-                  bg-white/5
-                "
+                className={`flex size-9 items-center justify-center rounded-lg border ${
+                  isBlack
+                    ? "border-white/10 bg-white/5"
+                    : "border-zinc-200 bg-zinc-100"
+                }`}
               >
                 <Bot size={17} />
               </div>
@@ -134,73 +152,112 @@ export default function ChatbotWidget({
               <div>
                 <p className="text-sm font-semibold">{chatbotName}</p>
 
-                <p className="text-[11px] text-white/50">AI Assistant</p>
+                <p
+                  className={`text-[11px] ${
+                    isBlack ? "text-white/50" : "text-zinc-500"
+                  }`}
+                >
+                  AI Assistant
+                </p>
               </div>
             </div>
 
             <button
               type="button"
               onClick={closeChat}
-              className=" rounded-lg p-2 text-white/60 transition hover:bg-white/10 hover:text-white
-              "
+              className={`rounded-lg p-2 transition ${
+                isBlack
+                  ? "text-white/60 hover:bg-white/10 hover:text-white"
+                  : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
+              }`}
               aria-label="Close chatbot"
             >
               <X size={18} />
             </button>
           </div>
 
-          {/* Message before conversation */}
-          <div className="relative z-10 flex-1 overflow-y-auto px-5 py-4">
+          {/* Messages */}
+          <div
+            className={`relative z-10 flex-1 overflow-y-auto px-5 py-4 ${
+              isBlack ? "bg-black" : "bg-zinc-50"
+            }`}
+          >
+            {/* Empty State */}
             {messages.length === 1 && (
               <div className="flex min-h-full flex-col items-center justify-center text-center">
-                <div className="flex p-2 items-center justify-center rounded-lg border border-white/10 bg-white/5 mb-4">
+                <div
+                  className={`mb-4 flex rounded-lg border p-2 ${
+                    isBlack
+                      ? "border-white/10 bg-white/5"
+                      : "border-zinc-200 bg-white"
+                  }`}
+                >
                   <Bot size={35} />
                 </div>
 
-                <h2 className="max-w-70 text-xl font-semibold">Hi there! 👋</h2>
+                <h2 className="max-w-70 text-xl font-semibold">
+                  Hi there! 👋
+                </h2>
 
-                <p className="mt-3 max-w-65 text-sm leading-6 text-white/50">
-                  Ask me anything about this company. I&lsquo;ll help you find the
-                  information you need.
+                <p
+                  className={`mt-3 max-w-65 text-sm leading-6 ${
+                    isBlack ? "text-white/50" : "text-zinc-500"
+                  }`}
+                >
+                  Ask me anything about this company. I&lsquo;ll help you find
+                  the information you need.
                 </p>
               </div>
             )}
 
-            {/* Messages after conversation starts */}
+            {/* Conversation */}
             {messages.length > 1 && (
               <div className="space-y-5">
                 {messages.map((item, index) => (
                   <div
                     key={index}
                     className={`flex items-start gap-2 ${
-                      item.role === "user" ? "justify-end" : "justify-start"
+                      item.role === "user"
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
+                    {/* Assistant Avatar */}
                     {item.role === "assistant" && (
                       <div
-                        className=" flex size-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5
-                        "
+                        className={`flex size-8 shrink-0 items-center justify-center rounded-full border ${
+                          isBlack
+                            ? "border-white/10 bg-white/5"
+                            : "border-zinc-200 bg-white"
+                        }`}
                       >
                         <Bot size={15} />
                       </div>
                     )}
 
+                    {/* Message */}
                     <div
-                      className={` max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-5
-                        ${
-                          item.role === "user"
+                      className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-5 ${
+                        item.role === "user"
+                          ? isBlack
                             ? "bg-white text-black"
-                            : "border border-white/10 bg-white/5 text-white/90"
-                        }
-                      `}
+                            : "bg-zinc-900 text-white"
+                          : isBlack
+                            ? "border border-white/10 bg-white/5 text-white/90"
+                            : "border border-zinc-200 bg-white text-zinc-900"
+                      }`}
                     >
                       {item.content}
                     </div>
 
+                    {/* User Avatar */}
                     {item.role === "user" && (
                       <div
-                        className=" flex size-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5
-                        "
+                        className={`flex size-8 shrink-0 items-center justify-center rounded-full border ${
+                          isBlack
+                            ? "border-white/10 bg-white/5"
+                            : "border-zinc-200 bg-zinc-100"
+                        }`}
                       >
                         <User size={15} />
                       </div>
@@ -208,27 +265,58 @@ export default function ChatbotWidget({
                   </div>
                 ))}
 
+                {/* Loading */}
                 {isLoading && (
                   <div className="flex items-center gap-2">
                     <div
-                      className=" flex size-8 items-center justify-center rounded-full border border-white/10 bg-white/5
-                      "
+                      className={`flex size-8 items-center justify-center rounded-full border ${
+                        isBlack
+                          ? "border-white/10 bg-white/5"
+                          : "border-zinc-200 bg-white"
+                      }`}
                     >
                       <Bot size={15} />
                     </div>
 
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <div
+                      className={`rounded-2xl border px-4 py-3 ${
+                        isBlack
+                          ? "border-white/10 bg-white/5"
+                          : "border-zinc-200 bg-white"
+                      }`}
+                    >
                       <div className="flex items-center gap-1">
-                        <span className="size-1.5 rounded-full bg-white/50 animate-bounce" />
-                        <span className="size-1.5 rounded-full bg-white/50 animate-bounce [animation-delay:150ms]" />
-                        <span className="size-1.5 rounded-full bg-white/50 animate-bounce [animation-delay:300ms]" />
+                        <span
+                          className={`size-1.5 animate-bounce rounded-full ${
+                            isBlack ? "bg-white/50" : "bg-zinc-400"
+                          }`}
+                        />
+
+                        <span
+                          className={`size-1.5 animate-bounce rounded-full [animation-delay:150ms] ${
+                            isBlack ? "bg-white/50" : "bg-zinc-400"
+                          }`}
+                        />
+
+                        <span
+                          className={`size-1.5 animate-bounce rounded-full [animation-delay:300ms] ${
+                            isBlack ? "bg-white/50" : "bg-zinc-400"
+                          }`}
+                        />
                       </div>
                     </div>
                   </div>
                 )}
 
+                {/* Error */}
                 {error && (
-                  <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
+                  <div
+                    className={`rounded-xl border px-4 py-3 text-sm ${
+                      isBlack
+                        ? "border-white/10 bg-white/5 text-white/70"
+                        : "border-red-200 bg-red-50 text-red-600"
+                    }`}
+                  >
                     {error}
                   </div>
                 )}
@@ -237,11 +325,18 @@ export default function ChatbotWidget({
           </div>
 
           {/* Input */}
-          <div className="relative z-10 px-4 pb-4 pt-3 border-t border-white/10">
+          <div
+            className={`relative z-10 border-t px-4 pb-4 pt-3 ${
+              isBlack ? "border-white/10 bg-black" : "border-zinc-200 bg-white"
+            }`}
+          >
             <form onSubmit={handleSubmit} className="flex items-center gap-3">
               <div
-                className=" flex-1 rounded-2xl border border-white/10 bg-white/5 px-3 h-12 flex items-center
-                "
+                className={`flex h-12 flex-1 items-center rounded-2xl border px-3 ${
+                  isBlack
+                    ? "border-white/10 bg-white/5"
+                    : "border-zinc-200 bg-zinc-50"
+                }`}
               >
                 <input
                   type="text"
@@ -249,41 +344,50 @@ export default function ChatbotWidget({
                   onChange={(event) => setMessage(event.target.value)}
                   placeholder="Ask anything..."
                   disabled={isLoading}
-                  className=" w-full h-full min-w-0 bg-transparent text-sm text-white outline-none placeholder:text-white/35
-                  "
+                  className={`h-full w-full min-w-0 bg-transparent text-sm outline-none ${
+                    isBlack
+                      ? "text-white placeholder:text-white/35"
+                      : "text-zinc-900 placeholder:text-zinc-400"
+                  }`}
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={!message.trim() || isLoading}
-                className=" w-11 h-11 flex items-center justify-center rounded-2xl bg-white text-black transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40
-                "
+                className={`flex h-11 w-11 items-center justify-center rounded-2xl transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 ${
+                  isBlack
+                    ? "bg-white text-black"
+                    : "bg-zinc-900 text-white"
+                }`}
                 aria-label="Send message"
               >
-                <Send size={16} />
+                <MoveUp size={20} />
               </button>
             </form>
 
-            <p className="mt-2 text-center text-[10px] text-white/30">
+            <p
+              className={`mt-2 text-center text-[10px] ${
+                isBlack ? "text-white/30" : "text-zinc-400"
+              }`}
+            >
               Powered by Knowly
             </p>
           </div>
         </div>
       )}
 
-      {/* floating button */}
+      {/* Floating Button */}
       {!isOpen && (
-        <div className="absolute bottom-4 right-4 ">
-          <div
-            className=" absolute inset-0 scale-150 rounded-full bg-white/10 blur-2xl
-            "
-          />
+        <div className="absolute bottom-4 right-4">
           <button
             type="button"
             onClick={openChat}
-            className=" relative flex size-14 items-center justify-center rounded-full border border-white/10 bg-black text-white shadow-[0_0_50px_rgba(255,255,255,0.12)] transition hover:scale-105
-            "
+            className={`relative flex size-14 items-center justify-center rounded-full border transition hover:scale-105 ${
+              isBlack
+                ? "border-white/10 bg-black text-white"
+                : "border-zinc-200 bg-white text-zinc-900"
+            }`}
             aria-label={`Open ${chatbotName}`}
           >
             <MessageCircle size={22} />

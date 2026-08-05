@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Bot, Plus, ArrowRight, MessageSquare } from "lucide-react";
+import { Bot, Plus, ArrowRight} from "lucide-react";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -68,7 +68,8 @@ export default async function DashboardPage() {
 
           <Link
             href="/dashboard/chatbots/new"
-            className="inline-flex w-fit items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition hover:opacity-90"
+            className="inline-flex w-fit items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition hover:opacity-90
+            hover:scale-105 ease-in-out duration-200"
           >
             <Plus size={17} />
             Create Chatbot
@@ -97,10 +98,11 @@ export default async function DashboardPage() {
 
               <Link
                 href="/dashboard/chatbots"
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+                className="group inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted
+                hover:scale-105 ease-in-out duration-200"
               >
                 View All Chatbots
-                <ArrowRight size={16} />
+                <ArrowRight size={16} className="group-hover:transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
@@ -137,7 +139,8 @@ export default async function DashboardPage() {
                 </p>
                 <Link
                   href="/dashboard/chatbots/new"
-                  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-xs font-medium text-background transition hover:opacity-90"
+                  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-xs font-medium text-background transition hover:opacity-90
+                  hover:scale-105 ease-in-out duration-200"
                 >
                   <Plus size={15} />
                   Create Chatbot
@@ -178,27 +181,6 @@ export default async function DashboardPage() {
               ))}
             </div>
           )}
-        </section>
-
-        <section className="mt-8 rounded-xl border border-border bg-card p-6">
-          <div>
-            <h2 className="text-lg font-semibold">Recent Activity</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Your latest chatbot activity will appear here.
-            </p>
-          </div>
-
-          <div className="mt-6 flex min-h-28 items-center justify-center rounded-lg border border-dashed border-border">
-            <div className="text-center">
-              <MessageSquare size={22} className="mx-auto text-muted-foreground" />
-              <p className="mt-2 text-sm font-medium text-muted-foreground">
-                No recent activity
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Activity will appear when users interact with your chatbots.
-              </p>
-            </div>
-          </div>
         </section>
       </div>
     </main>

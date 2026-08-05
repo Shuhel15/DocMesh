@@ -18,6 +18,7 @@ export default async function EmbedChatbotPage({ params }: Props) {
     select: {
       id: true,
       name: true,
+      theme: true,
     },
   });
 
@@ -30,6 +31,7 @@ export default async function EmbedChatbotPage({ params }: Props) {
       <ChatbotWidget
         botId={chatbot.id}
         chatbotName={chatbot.name}
+        theme={chatbot.theme as "black" | "white"}
       />
     </div>
   );

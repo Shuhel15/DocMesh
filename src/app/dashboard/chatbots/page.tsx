@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Plus, Bot, ArrowRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { motion, type Variants } from "framer-motion";
+import DeleteChatbotButton from "@/components/chatbot/delete-chatbot-button";
 
 type Chatbot = {
   id: string;
@@ -129,9 +130,22 @@ export default function ChatbotsPage() {
                       <Bot size={22} />
                     </div>
 
-                    <span className="rounded-full border border-border dark:bg-green-600 bg-green-500 text-white px-2.5 py-1 text-xs font-medium ">
-                      Active
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full border border-border dark:bg-green-600 bg-green-500 text-white px-2.5 py-1 text-xs font-medium ">
+                        Active
+                      </span>
+
+                      <DeleteChatbotButton
+                        chatbotId={chatbot.id}
+                        chatbotName={chatbot.name}
+                        variant="icon"
+                        onSuccess={() => {
+                          setChatbots((prev) =>
+                            prev.filter((b) => b.id !== chatbot.id)
+                          );
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <h2 className="mt-5 truncate text-lg font-semibold">

@@ -9,6 +9,8 @@ import ChatPreview from "@/components/chatbot/chat-preview";
 import DeleteDocumentButton from "@/components/documents/delete-document-button";
 import EditDocumentModal from "@/components/documents/edit-document-modal";
 import EmbedCode from "@/components/chatbot/embed-code";
+import ThemeSelector from "@/components/dashboard/ThemeSelector";
+import DeleteChatbotButton from "@/components/chatbot/delete-chatbot-button";
 
 interface ChatbotPageProps {
   params: Promise<{
@@ -104,7 +106,17 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
               Active
             </span>
 
-            <ChatPreview chatbotId={chatbot.id} chatbotName={chatbot.name} />
+            <ChatPreview
+              chatbotId={chatbot.id}
+              chatbotName={chatbot.name}
+              currentTheme={chatbot.theme as "black" | "white"}
+            />
+
+            <DeleteChatbotButton
+              chatbotId={chatbot.id}
+              chatbotName={chatbot.name}
+              redirectTo="/dashboard/chatbots"
+            />
           </div>
         </div>
 
@@ -201,6 +213,11 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
 
           {/* embeded code sidebar */}
           <div className="space-y-6">
+            {/* Theme Settings */}
+            <ThemeSelector
+              chatbotId={chatbot.id}
+              currentTheme={chatbot.theme as "black" | "white"}
+            />
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
                 <Code2 size={18} />
@@ -211,7 +228,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                 &lt;/body&gt; tag.
               </p>
 
-             <EmbedCode code={embedScript} />
+              <EmbedCode code={embedScript} />
             </div>
           </div>
         </div>

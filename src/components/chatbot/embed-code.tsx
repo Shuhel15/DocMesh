@@ -33,12 +33,16 @@ export default function EmbedCode({ code }: EmbedCodeProps) {
       <button
         type="button"
         onClick={handleCopy}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background transition hover:opacity-90"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background transition hover:opacity-90
+        hover:scale-105 ease-in-out duration-200"
       >
         {copied ? (
           <>
+          <div className="text-green-400 flex flex-row gap-2 items-center">
             <Check size={16} />
-            Copied!
+           Copied!
+           </div>
+            
           </>
         ) : (
           <>

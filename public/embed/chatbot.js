@@ -61,6 +61,7 @@
       height: data.isOpen
         ? "min(660px, calc(100vh - 32px))"
         : "80px",
+      borderRadius: data.isOpen ? "18px" : "32px",
     });
   });
 })();

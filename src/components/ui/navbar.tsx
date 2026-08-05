@@ -212,7 +212,7 @@ export default function Navbar() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex h-9 w-9 items-center justify-center  text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
+            className="flex h-9 w-9 items-center rounded-lg justify-center  text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
           >
