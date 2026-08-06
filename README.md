@@ -151,7 +151,7 @@ graph TD
     B --> C[Document Chunking Strategy]
     C --> D[Generate Embeddings & Save to DB]
     E[End-User Asks Question on Chatbot] --> F[Retrieve Top-K Context Chunks]
-    F --> G[Google Gemini 2.5 Flash]
+    F --> G[Google Gemini 3.5 Flash-Lite]
     G --> H[Return Grounded Answer to User]
 ```
 
