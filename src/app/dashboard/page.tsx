@@ -4,6 +4,12 @@ import { Bot, Plus, ArrowRight} from "lucide-react";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+interface ChatbotCard {
+  id: string;
+  name: string;
+  createdAt: Date;
+}
+
 export default async function DashboardPage() {
   //check if user is authenticated or not
   const session = await auth();
@@ -31,7 +37,7 @@ export default async function DashboardPage() {
   }
 
   // fetch chatbot count and recent chatbots
-  const [chatbotCount, chatbots] = await Promise.all([
+  const [chatbotCount, chatbots]: [number, ChatbotCard[]] = await Promise.all([
     prisma.chatbot.count({
       where: {
         companyId: company.id,
@@ -46,7 +52,7 @@ export default async function DashboardPage() {
       },
       take: 6,
     }),
-  ]);
+  ]) as [number, ChatbotCard[]];
 
   const userName = session.user.name?.split(" ")[0] || "there";
 
@@ -150,7 +156,7 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {chatbots.map((chatbot) => (
+              {chatbots.map((chatbot: ChatbotCard) => (
                 <div
                   key={chatbot.id}
                   className="group rounded-xl border border-border bg-background p-5 transition-all hover:border-foreground/40"

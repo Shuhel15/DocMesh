@@ -18,6 +18,14 @@ interface ChatbotPageProps {
   }>;
 }
 
+interface ChatbotDocument {
+  id: string;
+  name: string;
+  type: string;
+  content: string | null;
+  createdAt: Date;
+}
+
 export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
   const session = await auth();
 
@@ -155,7 +163,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                 </div>
               ) : (
                 <div className="divide-y divide-border mt-4">
-                  {chatbot.documents.map((doc) => (
+                  {chatbot.documents.map((doc: ChatbotDocument) => (
                     <div
                       key={doc.id}
                       className="py-3 flex items-center justify-between gap-4"
