@@ -3,9 +3,8 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![Google GenAI](https://img.shields.io/badge/Google_Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![Google GenAI](https://img.shields.io/badge/Google_Gemini-3.5_Flash-lite-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.19-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 **Knowly** is a modern, full-stack **Retrieval-Augmented Generation (RAG) AI Chatbot Platform**. Upload your company's knowledge base (PDF, DOCX, TXT files, or manual text), train your AI assistant with Google Gemini, and embed a fully responsive chatbot widget on any website using just one line of code!
 
@@ -14,7 +13,7 @@
 ## ✨ Features
 
 - 📄 **Multi-Format Document Ingestion**: Upload **PDF**, **DOC**, **DOCX**, or **TXT** files, or enter knowledge manually through the rich-text input form.
-- 🧠 **Smart RAG (Retrieval-Augmented Generation)**: Automatically chunks document text, computes text embeddings, and retrieves relevant context using Google Gemini 2.5 Flash.
+- 🧠 **Smart RAG (Retrieval-Augmented Generation)**: Automatically chunks document text, computes text embeddings, and retrieves relevant context using Google Gemini 3.5 Flash-lite.
 - 🎨 **Customizable Chatbot Themes**: Pick between sleek **Black** and clean **White** visual themes for embedded widgets.
 - ⚡ **Instant Embed Script**: Copy-paste a lightweight `<script>` tag onto any website, Webflow, Shopify, or custom Web page to deploy your AI assistant instantly.
 - 👁️ **Live Interactive Preview**: Test and chat with your AI chatbot inside your dashboard before deploying it to production.
@@ -31,9 +30,9 @@
 | **Framework** | [Next.js 16 (App Router)](https://nextjs.org/) |
 | **UI Library** | [React 19](https://react.dev/) & [Framer Motion 12](https://www.framer.com/motion/) |
 | **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) & [Lucide React](https://lucide.dev/) |
-| **AI / LLM** | [@google/genai (Gemini 2.5 Flash)](https://ai.google.dev/) |
+| **AI / LLM** | [@google/genai (Gemini 3.5 Flash-Lite)](https://ai.google.dev/) |
 | **Document Parsers** | `unpdf`, `mammoth`, `word-extractor` |
-| **Database & ORM** | [Prisma ORM 6](https://www.prisma.io/) + PostgreSQL / SQLite |
+| **Database & ORM** | [Prisma ORM 6](https://www.prisma.io/) + Supabase |
 | **Authentication** | [NextAuth v5 (Beta)](https://authjs.dev/) + `@auth/prisma-adapter` |
 | **Email Service** | [Resend](https://resend.com/) |
 
@@ -159,7 +158,7 @@ graph TD
 1. **Upload Knowledge**: When a document (PDF, DOCX, TXT) is uploaded, Knowly extracts plain text using server-side extraction utilities.
 2. **Chunking**: The document content is broken down into structured text chunks.
 3. **Retrieval**: When a user poses a question, Knowly performs semantic vector matching across the database to retrieve relevant context chunks.
-4. **Generation**: The context chunks along with the user prompt are sent to **Google Gemini 2.5 Flash** to compute a precise, grounded answer.
+4. **Generation**: The context chunks along with the user prompt are sent to **Google Gemini 3.5 Flash-Lite** to compute a precise, grounded answer.
 
 ---
 
@@ -183,12 +182,6 @@ To embed a chatbot on any external web page, simply paste the snippet provided i
 - `npm run start` — Runs the compiled production build.
 - `npm run lint` — Runs ESLint code quality checks.
 - `npx tsc --noEmit` — Executes TypeScript type checking.
-
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for details.
 
 ---
 
