@@ -52,7 +52,7 @@ export default function ChatbotsPage() {
           setChatbots(data.chatbots);
         }
       } catch (error) {
-        console.error("FETCH_CHATBOTS_ERROR:", error);
+        console.error("FETCH CHATBOTS ERROR:", error);
       } finally {
         setLoading(false);
       }
@@ -62,27 +62,30 @@ export default function ChatbotsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background px-6 pt-30 pb-10 text-foreground">
+    <main className="min-h-screen bg-background px-4 sm:px-6 pt-24 sm:pt-30 pb-10 text-foreground">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="show"
         className="mx-auto max-w-6xl"
       >
-        <motion.div variants={itemVariants} className="flex items-center justify-between">
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
               Your Chatbots
             </h1>
 
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-muted-foreground">
               Create and manage your AI chatbots.
             </p>
           </div>
 
           <Link
             href="/dashboard/chatbots/new"
-            className="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-all duration-200 hover:opacity-80 hover:scale-105"
+            className="inline-flex w-fit items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-all duration-200 hover:opacity-80 hover:scale-105"
           >
             <Plus size={18} />
             Create Chatbot
@@ -95,18 +98,18 @@ export default function ChatbotsPage() {
               <Loader />
             </div>
           ) : chatbots.length === 0 ? (
-            <motion.div variants={itemVariants} className="rounded-xl border border-dashed border-border bg-background p-12 text-center">
+            <motion.div
+              variants={itemVariants}
+              className="rounded-xl border border-dashed border-border bg-background p-12 text-center"
+            >
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
                 <Bot size={24} />
               </div>
 
-              <h2 className="mt-4 text-lg font-semibold">
-                No chatbots yet
-              </h2>
+              <h2 className="mt-4 text-lg font-semibold">No chatbots yet</h2>
 
               <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                Create your first chatbot and train it with your own
-                knowledge.
+                Create your first chatbot and train it with your own knowledge.
               </p>
 
               <Link
@@ -118,7 +121,10 @@ export default function ChatbotsPage() {
               </Link>
             </motion.div>
           ) : (
-            <motion.div variants={containerVariants} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div
+              variants={containerVariants}
+              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            >
               {chatbots.map((chatbot) => (
                 <motion.div
                   key={chatbot.id}
@@ -135,13 +141,14 @@ export default function ChatbotsPage() {
                         Active
                       </span>
 
+                      {/* Deleting chatbot */}
                       <DeleteChatbotButton
                         chatbotId={chatbot.id}
                         chatbotName={chatbot.name}
                         variant="icon"
                         onSuccess={() => {
                           setChatbots((prev) =>
-                            prev.filter((b) => b.id !== chatbot.id)
+                            prev.filter((b) => b.id !== chatbot.id),
                           );
                         }}
                       />
@@ -153,13 +160,12 @@ export default function ChatbotsPage() {
                   </h2>
 
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Created{" "}
-                    {new Date(chatbot.createdAt).toLocaleDateString()}
+                    Created {new Date(chatbot.createdAt).toLocaleDateString()}
                   </p>
 
                   <Link
                     href={`/dashboard/chatbots/${chatbot.id}`}
-                    className="mt-5 flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-muted"
+                    className="group mt-5 flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-muted"
                   >
                     Open Chatbot
                     <ArrowRight

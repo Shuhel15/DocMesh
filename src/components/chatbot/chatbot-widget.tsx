@@ -1,7 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect, useRef } from "react";
 import { Bot, User, X, MessageCircle, MoveUp } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ChatbotWidgetProps = {
   botId: string;
@@ -25,14 +27,18 @@ export default function ChatbotWidget({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Hello! How can I help you?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const isBlack = theme === "black";
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto-scroll to bottom when messages change or when the chat is opened
+  useEffect(() => {
+    if (!messagesEndRef.current) return;
+
+    // Smooth scroll to the latest message
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, isOpen]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -87,9 +93,7 @@ export default function ChatbotWidget({
     } catch (error) {
       console.error("EMBED_CHAT_ERROR:", error);
 
-      setError(
-        error instanceof Error ? error.message : "Something went wrong",
-      );
+      setError(error instanceof Error ? error.message : "Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -97,7 +101,7 @@ export default function ChatbotWidget({
 
   function openChat() {
     setIsOpen(true);
-
+//this is for resizing the iframe when the chat is opened. It sends a message to the parent window to resize the iframe to fit the chat widget.
     window.parent.postMessage(
       {
         type: "KNOWLY_CHATBOT_RESIZE",
@@ -109,7 +113,7 @@ export default function ChatbotWidget({
 
   function closeChat() {
     setIsOpen(false);
-
+//this is for resizing the iframe when the chat is closed. It sends a message to the parent window to resize the iframe to fit the chat widget.
     window.parent.postMessage(
       {
         type: "KNOWLY_CHATBOT_RESIZE",
@@ -182,44 +186,39 @@ export default function ChatbotWidget({
               isBlack ? "bg-black" : "bg-zinc-50"
             }`}
           >
-            {/* Empty State */}
-            {messages.length === 1 && (
-              <div className="flex min-h-full flex-col items-center justify-center text-center">
-                <div
-                  className={`mb-4 flex rounded-lg border p-2 ${
-                    isBlack
-                      ? "border-white/10 bg-white/5"
-                      : "border-zinc-200 bg-white"
-                  }`}
-                >
-                  <Bot size={35} />
+            {/* Before Message*/}
+            <div className="space-y-5 ">
+              {messages.length === 0 ? (
+                <div className="flex min-h-full flex-col items-center justify-center text-center mt-30">
+                  <div
+                    className={`mb-4 flex rounded-lg border p-2 ${
+                      isBlack
+                        ? "border-white/10 bg-white/5"
+                        : "border-zinc-200 bg-white"
+                    }`}
+                  >
+                    <Bot size={35} />
+                  </div>
+
+                  <h2 className="max-w-70 text-xl font-semibold">
+                    Hi there! 👋
+                  </h2>
+
+                  <p
+                    className={`mt-3 max-w-65 text-sm leading-6 ${
+                      isBlack ? "text-white/50" : "text-zinc-500"
+                    }`}
+                  >
+                    Ask me anything about this company. I&lsquo;ll help you find
+                    the information you need.
+                  </p>
                 </div>
-
-                <h2 className="max-w-70 text-xl font-semibold">
-                  Hi there! 👋
-                </h2>
-
-                <p
-                  className={`mt-3 max-w-65 text-sm leading-6 ${
-                    isBlack ? "text-white/50" : "text-zinc-500"
-                  }`}
-                >
-                  Ask me anything about this company. I&lsquo;ll help you find
-                  the information you need.
-                </p>
-              </div>
-            )}
-
-            {/* Conversation */}
-            {messages.length > 1 && (
-              <div className="space-y-5">
-                {messages.map((item, index) => (
+              ) : (
+                messages.map((item, index) => (
                   <div
                     key={index}
                     className={`flex items-start gap-2 ${
-                      item.role === "user"
-                        ? "justify-end"
-                        : "justify-start"
+                      item.role === "user" ? "justify-end" : "justify-start"
                     }`}
                   >
                     {/* Assistant Avatar */}
@@ -247,7 +246,75 @@ export default function ChatbotWidget({
                             : "border border-zinc-200 bg-white text-zinc-900"
                       }`}
                     >
-                      {item.content}
+                      {item.role === "assistant" ? (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            p: ({ children }) => (
+                              <p className="mb-3 last:mb-0 leading-6">
+                                {children}
+                              </p>
+                            ),
+
+                            strong: ({ children }) => (
+                              <strong className="font-semibold">
+                                {children}
+                              </strong>
+                            ),
+
+                            em: ({ children }) => (
+                              <em className="italic">{children}</em>
+                            ),
+
+                            ul: ({ children }) => (
+                              <ul className="list-disc space-y-1 pl-5 mb-3">
+                                {children}
+                              </ul>
+                            ),
+
+                            ol: ({ children }) => (
+                              <ol className="list-decimal space-y-1 pl-5 mb-3">
+                                {children}
+                              </ol>
+                            ),
+
+                            li: ({ children }) => (
+                              <li className="leading-6">{children}</li>
+                            ),
+
+                            a: ({ href, children }) => (
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`underline underline-offset-2 transition ${
+                                  isBlack
+                                    ? "text-blue-400 hover:text-blue-300"
+                                    : "text-blue-600 hover:text-blue-700"
+                                }`}
+                              >
+                                {children}
+                              </a>
+                            ),
+
+                            code: ({ children }) => (
+                              <code
+                                className={`rounded px-1.5 py-0.5 font-mono text-[13px] ${
+                                  isBlack
+                                    ? "bg-zinc-800 text-zinc-100"
+                                    : "bg-zinc-200 text-zinc-900"
+                                }`}
+                              >
+                                {children}
+                              </code>
+                            ),
+                          }}
+                        >
+                          {item.content}
+                        </ReactMarkdown>
+                      ) : (
+                        item.content
+                      )}
                     </div>
 
                     {/* User Avatar */}
@@ -263,65 +330,67 @@ export default function ChatbotWidget({
                       </div>
                     )}
                   </div>
-                ))}
+                ))
+              )}
 
-                {/* Loading */}
-                {isLoading && (
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`flex size-8 items-center justify-center rounded-full border ${
-                        isBlack
-                          ? "border-white/10 bg-white/5"
-                          : "border-zinc-200 bg-white"
-                      }`}
-                    >
-                      <Bot size={15} />
-                    </div>
-
-                    <div
-                      className={`rounded-2xl border px-4 py-3 ${
-                        isBlack
-                          ? "border-white/10 bg-white/5"
-                          : "border-zinc-200 bg-white"
-                      }`}
-                    >
-                      <div className="flex items-center gap-1">
-                        <span
-                          className={`size-1.5 animate-bounce rounded-full ${
-                            isBlack ? "bg-white/50" : "bg-zinc-400"
-                          }`}
-                        />
-
-                        <span
-                          className={`size-1.5 animate-bounce rounded-full [animation-delay:150ms] ${
-                            isBlack ? "bg-white/50" : "bg-zinc-400"
-                          }`}
-                        />
-
-                        <span
-                          className={`size-1.5 animate-bounce rounded-full [animation-delay:300ms] ${
-                            isBlack ? "bg-white/50" : "bg-zinc-400"
-                          }`}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Error */}
-                {error && (
+              {/*  Typing Indicator */}
+              {isLoading && (
+                <div className="flex items-center gap-2">
                   <div
-                    className={`rounded-xl border px-4 py-3 text-sm ${
+                    className={`flex size-8 items-center justify-center rounded-full border ${
                       isBlack
-                        ? "border-white/10 bg-white/5 text-white/70"
-                        : "border-red-200 bg-red-50 text-red-600"
+                        ? "border-white/10 bg-white/5"
+                        : "border-zinc-200 bg-white"
                     }`}
                   >
-                    {error}
+                    <Bot size={15} />
                   </div>
-                )}
-              </div>
-            )}
+
+                  <div
+                    className={`rounded-2xl border px-4 py-3 ${
+                      isBlack
+                        ? "border-white/10 bg-white/5"
+                        : "border-zinc-200 bg-white"
+                    }`}
+                  >
+                    <div className="flex items-center gap-1">
+                      <span
+                        className={`size-1.5 animate-bounce rounded-full ${
+                          isBlack ? "bg-white/50" : "bg-zinc-400"
+                        }`}
+                      />
+
+                      <span
+                        className={`size-1.5 animate-bounce rounded-full [animation-delay:150ms] ${
+                          isBlack ? "bg-white/50" : "bg-zinc-400"
+                        }`}
+                      />
+
+                      <span
+                        className={`size-1.5 animate-bounce rounded-full [animation-delay:300ms] ${
+                          isBlack ? "bg-white/50" : "bg-zinc-400"
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Error */}
+              {error && (
+                <div
+                  className={`rounded-xl border px-4 py-3 text-sm ${
+                    isBlack
+                      ? "border-white/10 bg-white/5 text-white/70"
+                      : "border-red-200 bg-red-50 text-red-600"
+                  }`}
+                >
+                  {error}
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
           </div>
 
           {/* Input */}
@@ -356,9 +425,7 @@ export default function ChatbotWidget({
                 type="submit"
                 disabled={!message.trim() || isLoading}
                 className={`flex h-11 w-11 items-center justify-center rounded-2xl transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 ${
-                  isBlack
-                    ? "bg-white text-black"
-                    : "bg-zinc-900 text-white"
+                  isBlack ? "bg-white text-black" : "bg-zinc-900 text-white"
                 }`}
                 aria-label="Send message"
               >

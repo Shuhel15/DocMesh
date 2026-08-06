@@ -15,7 +15,7 @@ function VerifyEmailContent() {
       : "");
 
   return (
-    <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-background px-4 pt-24 sm:pt-28 pb-12 text-foreground sm:px-6 lg:px-8">
       <div className="mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-md items-center justify-center">
         <section className="w-full rounded-3xl border border-border bg-white/80 p-6 text-center shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-sm dark:bg-black/30 sm:p-8">
           

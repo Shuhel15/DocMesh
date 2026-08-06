@@ -115,7 +115,7 @@ function LoginContent() {
   };
 
   return (
-    <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8 mt-10 ">
+    <main className="min-h-screen bg-background px-4 pt-24 sm:pt-28 pb-12 text-foreground sm:px-6 lg:px-8">
       <motion.div
         initial="hidden"
         animate="show"

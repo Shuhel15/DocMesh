@@ -58,7 +58,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-28 border-t border-border bg-background px-6 py-24"
+      className="scroll-mt-28 border-t border-border bg-background px-4 sm:px-6 py-16 sm:py-24"
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
@@ -71,15 +71,15 @@ export default function HowItWorks() {
           }}
           className="mx-auto max-w-2xl text-center"
         >
-          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs sm:text-sm font-medium uppercase tracking-widest text-muted-foreground">
             How It Works
           </p>
 
-          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="mt-3 sm:mt-4 text-2xl xs:text-3xl font-bold tracking-tight sm:text-5xl">
             From your knowledge to an AI chatbot.
           </h2>
 
-          <p className="mt-5 text-muted-foreground">
+          <p className="mt-3 sm:mt-5 text-sm sm:text-base text-muted-foreground">
             Build, train and embed your own AI chatbot in four simple steps.
           </p>
         </motion.div>
@@ -89,7 +89,7 @@ export default function HowItWorks() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+          className="mt-10 sm:mt-16 grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
           {steps.map((step) => {
             const Icon = step.icon;

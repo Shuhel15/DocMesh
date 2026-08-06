@@ -58,7 +58,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="scroll-mt-28 border-t border-border bg-muted/30 px-6 py-24"
+      className="scroll-mt-28 border-t border-border bg-muted/30 px-4 sm:px-6 py-16 sm:py-24"
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
@@ -69,17 +69,17 @@ export default function Features() {
             duration: 0.6,
             ease: "easeOut",
           }}
-          className="max-w-2xl"
+          className="max-w-2xl text-center sm:text-left"
         >
-          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs sm:text-sm font-medium uppercase tracking-widest text-muted-foreground">
             Features
           </p>
 
-          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="mt-3 sm:mt-4 text-2xl xs:text-3xl font-bold tracking-tight sm:text-5xl">
             Everything you need to build an AI chatbot.
           </h2>
 
-          <p className="mt-5 text-muted-foreground">
+          <p className="mt-3 sm:mt-5 text-sm sm:text-base text-muted-foreground">
             Powerful features to turn your business knowledge into a useful AI
             assistant.
           </p>
@@ -90,7 +90,7 @@ export default function Features() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2"
+          className="mt-10 sm:mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2"
         >
           {features.map((feature) => {
             const Icon = feature.icon;

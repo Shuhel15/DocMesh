@@ -10,7 +10,7 @@ export default function CTA() {
   const isAuthenticated = Boolean(session?.user);
 
   return (
-    <section className="border-t border-border px-6 py-24">
+    <section className="border-t border-border px-4 sm:px-6 py-16 sm:py-24">
       <motion.div
         initial={{
           opacity: 0,
@@ -30,7 +30,7 @@ export default function CTA() {
           duration: 0.7,
           ease: "easeOut",
         }}
-        className="mx-auto max-w-5xl rounded-3xl border border-border bg-foreground px-6 py-16 text-center text-background sm:px-12"
+        className="mx-auto max-w-5xl rounded-3xl border border-border bg-foreground px-4 py-12 text-center text-background sm:px-12 sm:py-16"
       >
         {/* Label */}
         <motion.p
@@ -41,7 +41,7 @@ export default function CTA() {
             duration: 0.5,
             delay: 0.1,
           }}
-          className="text-sm font-medium uppercase tracking-widest"
+          className="text-xs sm:text-sm font-medium uppercase tracking-widest"
         >
           Get Started
         </motion.p>
@@ -55,7 +55,7 @@ export default function CTA() {
             duration: 0.6,
             delay: 0.15,
           }}
-          className="mx-auto mt-4 max-w-2xl text-3xl font-bold tracking-tight sm:text-5xl"
+          className="mx-auto mt-3 sm:mt-4 max-w-2xl text-2xl xs:text-3xl font-bold tracking-tight sm:text-5xl"
         >
           Let your knowledge start talking.
         </motion.h2>

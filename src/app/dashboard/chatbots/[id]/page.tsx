@@ -71,7 +71,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
 ></script>`;
 
   return (
-    <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6">
+    <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-4 sm:px-6">
       <div className="mx-auto max-w-5xl">
         <Link
           href="/dashboard/chatbots"
@@ -85,15 +85,15 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
         </Link>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
               <Bot size={24} />
             </div>
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight truncate">
                 {chatbot.name}
               </h1>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1 truncate">
                 Created on {new Date(chatbot.createdAt).toLocaleDateString()}{" "}
                 <br />
                 ID: {chatbot.id}
@@ -101,7 +101,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className="rounded-full border border-border text-white bg-green-500 dark:bg-green-600 px-3 py-1 text-xs font-medium">
               Active
             </span>
@@ -136,9 +136,9 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                 </div>
               </div>
 
-              {/* file upload */}
+              {/* File upload */}
               <UploadForm chatbotId={chatbot.id} />
-              {/* manula text area  */}
+              {/* Manula text area  */}
               <ManualTextForm chatbotId={chatbot.id} />
 
               {chatbot.documents.length === 0 ? (
@@ -200,24 +200,26 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
                   {chatbot._count.conversations}
                 </p>
               </div>
-              <div className="rounded-xl border border-border bg-card p-5">
+              {/* <div className="rounded-xl border border-border bg-card p-5">
                 <p className="text-xs text-muted-foreground">
                   Knowledge Chunks
                 </p>
                 <p className="text-2xl font-bold mt-2">
                   {chatbot._count.chunks}
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
 
-          {/* embeded code sidebar */}
+          
           <div className="space-y-6">
             {/* Theme Settings */}
             <ThemeSelector
               chatbotId={chatbot.id}
               currentTheme={chatbot.theme as "black" | "white"}
             />
+
+            {/* Embeded code sidebar */}
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
                 <Code2 size={18} />

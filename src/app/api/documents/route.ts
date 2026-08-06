@@ -26,7 +26,6 @@ export async function POST(request: Request) {
 
     //read form data
     const formData = await request.formData();
-
     const chatbotId = formData.get("chatbotId");
     const file = formData.get("file");
     const title = formData.get("title");
@@ -65,8 +64,7 @@ export async function POST(request: Request) {
       );
     }
 
-    //file upload
-
+    //File upload
     if (file instanceof File) {
       //validate file extension
       const extension = file.name.split(".").pop()?.toLowerCase();
@@ -82,7 +80,7 @@ export async function POST(request: Request) {
         );
       }
 
-      // extract text
+      // extract text from the uploaded file
       const content = await extractText(file);
 
       if (!content.trim()) {
@@ -96,7 +94,7 @@ export async function POST(request: Request) {
         );
       }
 
-      // save document
+      // save document in the db
       const document = await prisma.document.create({
         data: {
           name: file.name,
@@ -141,7 +139,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         {
-          message: "Document uploaded successfully",
+          message: "Document uploaded successfully!",
           document: {
             id: document.id,
             name: document.name,
@@ -247,7 +245,7 @@ export async function POST(request: Request) {
       },
     );
   } catch (error) {
-    console.error("DOCUMENT_API_ERROR:", error);
+    console.error("DOCUMENT API ERROR:", error);
 
     return NextResponse.json(
       {
@@ -279,7 +277,6 @@ export async function DELETE(request: Request) {
 
     // Get document ID and chatbot ID
     const { searchParams } = new URL(request.url);
-
     const documentId = searchParams.get("id");
     const chatbotId = searchParams.get("chatbotId");
 
@@ -338,7 +335,7 @@ export async function DELETE(request: Request) {
       message: "Document deleted successfully",
     });
   } catch (error) {
-    console.error("DOCUMENT_DELETE_ERROR:", error);
+    console.error("DOCUMENT DELETE ERROR:", error);
 
     return NextResponse.json(
       {
@@ -369,13 +366,12 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-
     const documentId = body.documentId;
     const chatbotId = body.chatbotId;
     const title = body.title;
     const content = body.content;
 
-    // Validate IDs
+    // Validate ids
     if (typeof documentId !== "string" || typeof chatbotId !== "string") {
       return NextResponse.json(
         {
@@ -412,17 +408,17 @@ export async function PUT(request: Request) {
 
     // Find document and verify ownership
     const document = await prisma.document.findFirst({
-  where: {
-    id: documentId,
-    chatbotId,
-    type: "text",
-    chatbot: {
-      company: {
-        userId: session.user.id,
+      where: {
+        id: documentId,
+        chatbotId,
+        type: "text",
+        chatbot: {
+          company: {
+            userId: session.user.id,
+          },
+        },
       },
-    },
-  },
-});
+    });
 
     if (!document) {
       return NextResponse.json(
@@ -491,7 +487,7 @@ export async function PUT(request: Request) {
       },
     });
   } catch (error) {
-    console.error("DOCUMENT_UPDATE_ERROR:", error);
+    console.error("DOCUMENT UPDATE ERROR:", error);
 
     return NextResponse.json(
       {

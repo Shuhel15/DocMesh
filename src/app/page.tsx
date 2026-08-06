@@ -42,26 +42,26 @@ export default function Home() {
       {/* Hero */}
       <section
         id="home"
-        className="flex min-h-screen flex-col items-center justify-center px-6 py-20 text-center"
+        className="flex min-h-screen flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-20 text-center"
       >
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
-          className="w-full max-w-3xl mt-20 items-center justify-center text-center"
+          className="w-full max-w-3xl mt-16 sm:mt-20 items-center justify-center text-center"
         >
           <motion.p
             variants={itemVariants}
-            className="mx-auto flex flex-row items-center justify-center gap-1 mb-4 w-fit border-b-2  text-center text-sm font-medium text-muted-foreground"
+            className="mx-auto flex flex-row items-center justify-center gap-1 mb-4 w-fit border-b-2  text-center text-xs sm:text-sm font-medium text-muted-foreground"
           >
-            <Bot size={19}  className="text-green-500 animate-pulse mb-0.5"/>
+            <Bot size={19} className="text-green-500 animate-pulse mb-0.5" />
             AI Chatbot Platform
           </motion.p>
 
           <motion.h1
             variants={itemVariants}
-            className="text-4xl font-bold tracking-tight sm:text-6xl"
+            className="text-2xl xs:text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
           >
             Your Data. Your Bot.{" "}
             <span className="relative inline-block">
@@ -94,7 +94,7 @@ export default function Home() {
 
           <motion.p
             variants={itemVariants}
-            className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground"
+            className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground"
           >
             Connect your knowledge, train your AI, and give your users instant
             answers—right on your website.
@@ -104,22 +104,33 @@ export default function Home() {
             variants={itemVariants}
             className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
           >
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+            <motion.div
+              className="w-full sm:w-auto"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
               <Link
                 href={isAuthenticated ? "/dashboard" : "/login"}
-                className="inline-block rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                className="w-full sm:w-auto text-center inline-block rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Build Your Chatbot
               </Link>
             </motion.div>
 
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+            <motion.div
+              className="w-full sm:w-auto"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
               <Link
                 href="/#how-it-works"
-                className="group flex flex-row items-center justify-center gap-2 rounded-md border border-border px-6 py-3 font-medium transition-colors hover:bg-muted"
+                className="w-full sm:w-auto text-center group flex flex-row items-center justify-center gap-2 rounded-md border border-border px-6 py-3 font-medium transition-colors hover:bg-muted"
               >
                 Learn More
-                <MoveRight size={16} className="transition-transform group-hover:translate-x-1" />
+                <MoveRight
+                  size={16}
+                  className="transition-transform group-hover:translate-x-1"
+                />
               </Link>
             </motion.div>
           </motion.div>
@@ -150,8 +161,11 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
+      {/* How it works section */}
       <HowItWorks />
+      {/* Features section */}
       <Features />
+      {/* CTA Section */}
       <CTA />
     </main>
   );

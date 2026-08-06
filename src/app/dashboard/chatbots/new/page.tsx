@@ -64,13 +64,13 @@ export default function NewChatbotPage() {
 
       router.push(`/dashboard/chatbots/${data.chatbot.id}`);
     } catch (error) {
-      console.error("CREATE_CHATBOT_ERROR:", error);
+      console.error("CREATE CHATBOT ERROR:", error);
       setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground px-6 py-30">
+    <main className="min-h-screen bg-background text-foreground px-4 sm:px-6 pt-24 sm:pt-30 pb-10">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -95,7 +95,6 @@ export default function NewChatbotPage() {
           </p>
         </motion.div>
 
-        {/* Form */}
         <motion.form variants={itemVariants} onSubmit={handleCreate} className="space-y-6">
           <div>
             <label htmlFor="name" className="mb-2 block text-sm font-medium">
@@ -114,7 +113,6 @@ export default function NewChatbotPage() {
             />
           </div>
 
-          {/* Actions */}
           <div className="flex items-center justify-end gap-3 border-t border-border pt-6">
             <Link
               href="/dashboard/chatbots"

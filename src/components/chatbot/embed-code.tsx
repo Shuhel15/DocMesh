@@ -38,7 +38,7 @@ export default function EmbedCode({ code }: EmbedCodeProps) {
       >
         {copied ? (
           <>
-          <div className="text-green-400 flex flex-row gap-2 items-center">
+          <div className="text-green-500 flex flex-row gap-2 items-center">
             <Check size={16} />
            Copied!
            </div>

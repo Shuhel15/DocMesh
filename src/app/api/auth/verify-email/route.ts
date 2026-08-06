@@ -50,7 +50,7 @@ export async function GET(req: Request) {
         { status: 400 },
       );
     }
-//find the user associated with the verification token
+    //find the user associated with the verification token
     const user = await prisma.user.findUnique({
       where: {
         email: verificationToken.identifier,
@@ -66,7 +66,7 @@ export async function GET(req: Request) {
         { status: 404 },
       );
     }
-// update the user's emailVerified field to the current date
+    // update the user's emailVerified field to the current date
     await prisma.user.update({
       where: {
         id: user.id,
@@ -75,7 +75,7 @@ export async function GET(req: Request) {
         emailVerified: new Date(),
       },
     });
-// delete the verification token after successful verification
+    // delete the verification token after successful verification
     await prisma.verificationToken.delete({
       where: {
         token,

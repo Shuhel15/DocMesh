@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
-    // 1. Check logged-in user
+    // 1.Check logged-in user
     const session = await auth();
 
     if (!session?.user?.email) {
@@ -18,7 +18,7 @@ export async function GET() {
       );
     }
 
-    // 2. Find user
+    // 2.Find user
     const user = await prisma.user.findUnique({
       where: {
         email: session.user.email,
@@ -35,7 +35,7 @@ export async function GET() {
       );
     }
 
-    // 3. Find user's company
+    // 3.Find user's company
     const company = await prisma.company.findFirst({
       where: {
         userId: user.id,
@@ -49,7 +49,7 @@ export async function GET() {
       });
     }
 
-    // 4. Get company's chatbots
+    // 4.Get company's chatbots
     const chatbots = await prisma.chatbot.findMany({
       where: {
         companyId: company.id,
@@ -59,13 +59,13 @@ export async function GET() {
       },
     });
 
-    // 5. Return chatbots
+    // 5.Return chatbots
     return NextResponse.json({
       success: true,
       chatbots,
     });
   } catch (error) {
-    console.error("GET_CHATBOTS_ERROR:", error);
+    console.error("GET CHATBOTS ERROR:", error);
 
     return NextResponse.json(
       {
@@ -126,7 +126,6 @@ export async function POST(req: Request) {
     }
 
     // find user's company if ther is no company create a new one
-
     const company = await prisma.company.findFirst({
       where: {
         userId: user.id,
@@ -145,7 +144,6 @@ export async function POST(req: Request) {
     }
 
     //create chatbot
-
     const chatbot = await prisma.chatbot.create({
       data: {
         name: name.trim(),
@@ -163,7 +161,7 @@ export async function POST(req: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("CREATE_CHATBOT_ERROR:", error);
+    console.error("CREATE CHATBOT ERROR:", error);
 
     return NextResponse.json(
       {

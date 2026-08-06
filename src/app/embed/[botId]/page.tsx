@@ -7,7 +7,7 @@ type Props = {
     botId: string;
   }>;
 };
-
+// This page is used to embed the chatbot in an iframe. It fetches the chatbot data from the database and renders the ChatbotWidget component.
 export default async function EmbedChatbotPage({ params }: Props) {
   const { botId } = await params;
 

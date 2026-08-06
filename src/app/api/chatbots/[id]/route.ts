@@ -27,7 +27,7 @@ export async function DELETE(
       return NextResponse.json(
         {
           success: false,
-          message: "Chatbot ID is required",
+          message: "This chatbot does not exist",
         },
         { status: 400 },
       );
@@ -98,12 +98,12 @@ export async function DELETE(
       message: "Chatbot deleted successfully",
     });
   } catch (error) {
-    console.error("DELETE_CHATBOT_ERROR:", error);
+    console.error("DELETE CHATBOT ERROR:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Something went wrong while deleting chatbot",
+        message: "Something went wrong while deleting your chatbot",
       },
       { status: 500 },
     );

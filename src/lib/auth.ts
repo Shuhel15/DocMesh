@@ -81,6 +81,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
+      // If the user is signing in for the first time, add their id to the token
       if (user?.id) {
         token.id = user.id;
       }
@@ -88,6 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
+      // Add the user id to the session object
       if (session.user) {
         session.user.id = (token.id as string) || (token.sub as string);
       }

@@ -121,7 +121,7 @@ export default function RegisterPage() {
 
       router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (error) {
-      console.error("REGISTER_ERROR:", error);
+      console.error("REGISTER ERROR:", error);
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -138,7 +138,7 @@ export default function RegisterPage() {
         callbackUrl: "/dashboard",
       });
     } catch (error) {
-      console.error("GOOGLE_LOGIN_ERROR:", error);
+      console.error("GOOGLE LOGIN ERROR:", error);
       setError("Google login failed. Please try again.");
       setGoogleLoading(false);
     }
@@ -170,7 +170,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-16 text-foreground md:mt-20 mt-7 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-background px-4 pt-24 sm:pt-28 pb-12 text-foreground sm:px-6 lg:px-8">
       <motion.div
         initial="hidden"
         animate="show"

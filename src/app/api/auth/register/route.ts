@@ -97,7 +97,7 @@ export async function POST(req: Request) {
       <p>Hi ${name},</p>
 
       <p>
-        Thanks for creating your Knowly account.
+        Thank your for creating your Knowly account.
         Please verify your email address by clicking the button below.
       </p>
 
@@ -128,6 +128,7 @@ export async function POST(req: Request) {
     console.log("RESEND DATA:", data);
     console.log("RESEND ERROR:", error);
 
+    // Handle the case where the email could not be sent
     if (error) {
       return NextResponse.json(
         {
@@ -138,6 +139,7 @@ export async function POST(req: Request) {
         { status: 500 },
       );
     }
+
     return NextResponse.json(
       {
         success: true,
@@ -147,7 +149,7 @@ export async function POST(req: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("REGISTER_ERROR:", error);
+    console.error("REGISTER ERROR:", error);
 
     return NextResponse.json(
       {

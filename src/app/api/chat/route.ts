@@ -8,7 +8,6 @@ import { generateAnswer } from "@/lib/rag/generate";
 export async function POST(request: Request) {
   try {
     // Authentication is optional .dashboard users will have a session .external visitors will not.
-
     const session = await auth();
 
     // Reading request body
@@ -60,6 +59,7 @@ export async function POST(request: Request) {
     // Create or get conversation
     let conversation;
 
+    // If conversationId is provided, try to find the conversation.
     if (conversationId) {
       conversation = await prisma.conversation.findFirst({
         where: {
@@ -69,6 +69,7 @@ export async function POST(request: Request) {
       });
     }
 
+    //  If not found or not provided, create a new conversation.
     if (!conversation) {
       conversation = await prisma.conversation.create({
         data: {

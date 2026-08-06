@@ -35,14 +35,14 @@ const itemVariants: Variants = {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-background px-6 py-12">
+    <footer className="border-t border-border bg-background px-4 sm:px-6 py-10 sm:py-12">
       <div className="mx-auto max-w-6xl">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="grid gap-10 md:grid-cols-2 lg:grid-cols-4"
+          className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
         >
           {/* Brand */}
           <motion.div variants={itemVariants}>

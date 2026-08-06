@@ -93,9 +93,9 @@ export default function Navbar() {
       initial="hidden"
       animate="show"
       variants={navVariants}
-      className="fixed left-1/2 top-5 z-50 w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2"
+      className="fixed left-1/2 top-3 sm:top-5 z-50 w-[calc(100%-1.25rem)] sm:w-[calc(100%-2rem)] max-w-6xl -translate-x-1/2"
     >
-      <motion.nav className="flex min-h-16 items-center justify-between rounded-[22px] border border-black/10 bg-white/80 px-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/60 sm:px-6">
+      <motion.nav className="flex min-h-14 sm:min-h-16 items-center justify-between rounded-[20px] sm:rounded-[22px] border border-black/10 bg-white/80 px-3.5 sm:px-6 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/60">
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -15 }}
@@ -251,7 +251,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.98 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="mt-2 flex items-center justify-center rounded-[22px] border border-black/10 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/90 md:hidden"
+            className="mt-2 max-h-[75vh] overflow-y-auto flex items-center justify-center rounded-[22px] border border-black/10 bg-white/95 p-4 shadow-2xl backdrop-blur-xl dark:border-white/20 dark:bg-black/90 md:hidden"
           >
             <div className="flex w-full flex-col gap-2">
               {navLinks.map((link) => (

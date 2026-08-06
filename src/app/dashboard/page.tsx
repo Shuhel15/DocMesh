@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 export default async function DashboardPage() {
+  //check if user is authenticated or not
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -50,8 +51,8 @@ export default async function DashboardPage() {
   const userName = session.user.name?.split(" ")[0] || "there";
 
   return (
-    <main className="min-h-screen bg-background text-foreground pt-28 pb-12">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    <main className="min-h-screen bg-background text-foreground pt-24 sm:pt-28 pb-10 sm:pb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -132,7 +133,7 @@ export default async function DashboardPage() {
               <div className="text-center">
                 <Bot size={28} className="mx-auto text-muted-foreground" />
                 <p className="mt-3 text-sm font-medium text-foreground">
-                  No chatbots created yet
+                  No chatbots created yet ?
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Create your first chatbot to start training it with your data.

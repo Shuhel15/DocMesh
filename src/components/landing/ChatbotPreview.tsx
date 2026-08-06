@@ -117,23 +117,14 @@ export default function ChatbotPreview() {
         </div>
 
         {/* Chatbot Previews */}
-        <div
-          className=" relative mx-auto mt-12 flex max-w-5xl flex-col items-center gap-8 sm:mt-16 sm:flex-row sm:justify-center sm:gap-0 lg:mt-20
-          "
-        >
+        <div className="relative mx-auto mt-10 flex max-w-5xl flex-col items-center gap-6 sm:mt-16 sm:flex-row sm:justify-center sm:gap-0 lg:mt-20">
           {/* Light */}
-          <div
-            className=" relative z-10 w-full max-w-95 sm:w-[50%] sm:max-w-90 sm:translate-x-5 sm:rotate-[4deg] lg:w-[48%] lg:max-w-95 lg:translate-x-8 lg:rotate-[5deg]
-            hover:scale-105 delay-75 transform transition duration-300 ease-in-out"
-          >
+          <div className="relative z-10 w-full max-w-xs xs:max-w-sm sm:w-[50%] sm:max-w-85 sm:translate-x-4 sm:rotate-[4deg] lg:max-w-95 lg:translate-x-6 lg:rotate-[5deg] transform transition duration-300 ease-in-out hover:scale-105">
             <ChatPreview />
           </div>
 
           {/* Dark */}
-          <div
-            className=" relative z-10 w-full max-w-95 sm:w-[50%] sm:max-w-90 sm:-translate-x-5 sm:rotate-[-4deg] lg:w-[48%] lg:max-w-95 lg:-translate-x-8 lg:rotate-[-5deg]
-            hover:scale-105 delay-75 transform transition duration-300 ease-in-out"
-          >
+          <div className="relative z-10 w-full max-w-xs xs:max-w-sm sm:w-[50%] sm:max-w-85 sm:-translate-x-4 sm:rotate-[-4deg] lg:max-w-95 lg:-translate-x-6 lg:rotate-[-5deg] transform transition duration-300 ease-in-out hover:scale-105">
             <ChatPreview dark />
           </div>
         </div>

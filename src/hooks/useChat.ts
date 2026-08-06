@@ -25,6 +25,7 @@ export function useChat(chatbotId: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Function to send a message to the chatbot and receive a response
   const sendMessage = useCallback(
     async (question: string) => {
       const trimmedQuestion = question.trim();

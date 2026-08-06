@@ -80,7 +80,7 @@ export default function ThemeSelector({
             <span className="text-sm font-medium">Black</span>
 
             {theme === "black" && (
-              <span className="text-xs font-medium text-green-400">
+              <span className="text-xs font-medium text-green-500">
                 Selected
               </span>
             )}
@@ -104,7 +104,7 @@ export default function ThemeSelector({
             <span className="text-sm font-medium">White</span>
 
             {theme === "white" && (
-              <span className="text-xs font-medium text-green-400">
+              <span className="text-xs font-medium text-green-500">
                 Selected
               </span>
             )}

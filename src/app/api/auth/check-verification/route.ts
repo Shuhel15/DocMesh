@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  // Check if the email exists and is verified
   try {
     const body = await req.json();
     const email = typeof body?.email === "string" ? body.email.trim() : "";
@@ -10,6 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ exists: false, verified: false });
     }
 
+    //Find the user by email and check if emailVerified is true 
     const user = await prisma.user.findUnique({
       where: { email },
       select: { emailVerified: true },
@@ -24,7 +26,7 @@ export async function POST(req: Request) {
       verified: Boolean(user.emailVerified),
     });
   } catch (error) {
-    console.error("CHECK_VERIFICATION_ERROR:", error);
+    console.error("CHECK VERIFICATION ERROR:", error);
     return NextResponse.json({ exists: false, verified: false });
   }
 }
