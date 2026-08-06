@@ -1,4 +1,4 @@
-import { MoveUp } from "lucide-react";
+import { Bot, MoveUp } from "lucide-react";
 
 const messages = [
   {
@@ -31,7 +31,7 @@ function ChatPreview({ dark = false }: { dark?: boolean }) {
             dark ? "bg-white text-black" : "bg-black text-white"
           }`}
         >
-          AI
+          <Bot size={17} />
         </div>
 
         <div>

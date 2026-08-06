@@ -1,4 +1,4 @@
-# 🤖 Knowly — Turn Your Data into an AI Chatbot
+# 🤖 DocMesh — Turn Your Data into an AI Chatbot
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
@@ -6,7 +6,7 @@
 [![Google GenAI](https://img.shields.io/badge/Google_Gemini-3.5_Flash-lite-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.19-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
 
-**Knowly** is a modern, full-stack **Retrieval-Augmented Generation (RAG) AI Chatbot Platform**. Upload your company's knowledge base (PDF, DOCX, TXT files, or manual text), train your AI assistant with Google Gemini, and embed a fully responsive chatbot widget on any website using just one line of code!
+**DocMesh** is a modern, full-stack **Retrieval-Augmented Generation (RAG) AI Chatbot Platform**. Upload your company's knowledge base (PDF, DOCX, TXT files, or manual text), train your AI assistant with Google Gemini, and embed a fully responsive chatbot widget on any website using just one line of code!
 
 ---
 
@@ -41,7 +41,7 @@
 ## 📂 Directory & Project Structure
 
 ```text
-knowly/
+DocMesh/
 ├── prisma/
 │   ├── migrations/              # Prisma database migration scripts
 │   └── schema.prisma            # Database schema (User, Account, Chatbot, Document, Chunk, etc.)
@@ -96,8 +96,8 @@ Ensure you have the following installed on your local machine:
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/shuhel/knowly.git
-   cd knowly
+   git clone https://github.com/shuhel/DocMesh.git
+   cd DocMesh
    ```
 
 2. **Install Dependencies**
@@ -114,7 +114,7 @@ Ensure you have the following installed on your local machine:
    NEXTAUTH_SECRET="your-super-secret-key-here"
 
    # Database Connection
-   DATABASE_URL="file:./dev.db" # or PostgreSQL URL: postgresql://user:pass@localhost:5432/knowly
+   DATABASE_URL="file:./dev.db" # or PostgreSQL URL: postgresql://user:pass@localhost:5432/DocMesh
 
    # Google Gemini AI Key
    GEMINI_API_KEY="your-gemini-api-key"
@@ -125,7 +125,7 @@ Ensure you have the following installed on your local machine:
 
    # Resend Email API Key (Optional for verification emails)
    RESEND_API_KEY="re_123456789"
-   EMAIL_FROM="Knowly <noreply@yourdomain.com>"
+   EMAIL_FROM="DocMesh <noreply@yourdomain.com>"
    ```
 
 4. **Initialize Database & Run Migrations**
@@ -155,10 +155,15 @@ graph TD
     G --> H[Return Grounded Answer to User]
 ```
 
-1. **Upload Knowledge**: When a document (PDF, DOCX, TXT) is uploaded, Knowly extracts plain text using server-side extraction utilities.
+1. **Upload Knowledge**: When a document (PDF, DOCX, TXT) is uploaded, DocMesh extracts plain text using server-side extraction utilities.
 2. **Chunking**: The document content is broken down into structured text chunks.
+<<<<<<< HEAD
 3. **Retrieval**: When a user poses a question, Knowly performs semantic vector matching across the database to retrieve relevant context chunks.
 4. **Generation**: The context chunks along with the user prompt are sent to **Google Gemini 3.5 Flash-Lite** to compute a precise, grounded answer.
+=======
+3. **Retrieval**: When a user poses a question, DocMesh performs semantic vector matching across the database to retrieve relevant context chunks.
+4. **Generation**: The context chunks along with the user prompt are sent to **Google Gemini 2.5 Flash** to compute a precise, grounded answer.
+>>>>>>> 7d0a715 (Name Changed)
 
 ---
 

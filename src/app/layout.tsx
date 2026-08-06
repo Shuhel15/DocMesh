@@ -13,7 +13,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Knowly",
+  title: "DocMesh",
   description: "Build and embed your own AI chatbot",
 };
 

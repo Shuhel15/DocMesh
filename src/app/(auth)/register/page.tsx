@@ -182,12 +182,12 @@ export default function RegisterPage() {
             variants={panelVariants}
             className="hidden flex-col justify-center bg-black p-8 text-white dark:bg-white dark:text-black sm:p-10 lg:flex lg:p-12"
           >
-            <h1 className="text-2xl font-bold tracking-tight">KNOWLY</h1>
+            <h1 className="text-2xl font-bold tracking-tight">DocMesh</h1>
             <h2 className="mt-6 text-3xl font-semibold tracking-tight">
               Create your account
             </h2>
             <p className="mt-3 max-w-md text-sm leading-6 text-white/80 dark:text-black/80">
-              Join Knowly to organize your knowledge, chat with documents, and
+              Join DocMesh to organize your knowledge, chat with documents, and
               keep everything in one place.
             </p>
             <div className="mt-8 space-y-3 text-sm text-white/80 dark:text-black/80">

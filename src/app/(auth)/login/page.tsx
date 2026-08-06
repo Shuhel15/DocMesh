@@ -127,7 +127,7 @@ function LoginContent() {
             variants={panelVariants}
             className="hidden flex-col justify-center bg-black p-8 text-white sm:p-10 lg:flex lg:p-12 dark:bg-white dark:text-black"
           >
-            <h1 className="text-2xl font-bold tracking-tight">KNOWLY</h1>
+            <h1 className="text-2xl font-bold tracking-tight">DocMesh</h1>
             <h2 className="mt-6 text-3xl font-semibold tracking-tight">
               Welcome back
             </h2>
@@ -154,7 +154,7 @@ function LoginContent() {
                 variants={itemVariants}
                 className="text-center text-sm text-black/60 dark:text-white/60"
               >
-                Welcome back to Knowly. Access your AI chatbot and manage your
+                Welcome back to DocMesh. Access your AI chatbot and manage your
                 knowledge base—all in one place.
               </motion.p>
 

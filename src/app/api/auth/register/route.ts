@@ -89,15 +89,15 @@ export async function POST(req: Request) {
     const { data, error } = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: email,
-      subject: "Verify your Knowly account",
+      subject: "Verify your DocMesh account",
       html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
-      <h2>Welcome to Knowly 👋</h2>
+      <h2>Welcome to DocMesh 👋</h2>
 
       <p>Hi ${name},</p>
 
       <p>
-        Thank your for creating your Knowly account.
+        Thank your for creating your DocMesh account.
         Please verify your email address by clicking the button below.
       </p>
 
@@ -120,7 +120,7 @@ export async function POST(req: Request) {
 
       <p>If you didn't create this account, you can safely ignore this email.</p>
 
-      <p>— Team Knowly</p>
+      <p>— Team DocMesh</p>
     </div>
   `,
     });

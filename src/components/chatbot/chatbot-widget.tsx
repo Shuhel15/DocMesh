@@ -104,7 +104,7 @@ export default function ChatbotWidget({
 //this is for resizing the iframe when the chat is opened. It sends a message to the parent window to resize the iframe to fit the chat widget.
     window.parent.postMessage(
       {
-        type: "KNOWLY_CHATBOT_RESIZE",
+        type: "DocMesh_CHATBOT_RESIZE",
         isOpen: true,
       },
       "*",
@@ -116,7 +116,7 @@ export default function ChatbotWidget({
 //this is for resizing the iframe when the chat is closed. It sends a message to the parent window to resize the iframe to fit the chat widget.
     window.parent.postMessage(
       {
-        type: "KNOWLY_CHATBOT_RESIZE",
+        type: "DocMesh_CHATBOT_RESIZE",
         isOpen: false,
       },
       "*",
@@ -438,7 +438,7 @@ export default function ChatbotWidget({
                 isBlack ? "text-white/30" : "text-zinc-400"
               }`}
             >
-              Powered by Knowly
+              Powered by DocMesh
             </p>
           </div>
         </div>

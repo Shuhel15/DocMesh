@@ -113,7 +113,7 @@ export default function Navbar() {
             className="text-xl font-bold tracking-tight text-foreground"
           >
             <span className="relative inline-block text-3xl">
-            𝕂
+            𝔻
             </span>
           </Link>
         </motion.div>

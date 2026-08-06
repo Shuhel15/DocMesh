@@ -24,7 +24,7 @@ function VerifyEmailContent() {
             className="text-2xl font-bold tracking-tight text-foreground"
           >
             <span className="relative inline-block">
-              KNOWLY
+              DocMesh
               <span className="absolute -bottom-2 left-0 h-0.75 w-full rounded-full bg-black/20 dark:bg-white/20" />
             </span>
           </Link>

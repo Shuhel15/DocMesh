@@ -4,14 +4,14 @@
     document.querySelector("script[data-bot-id]");
 
   if (!script) {
-    console.error("Knowly: Embed script element not found.");
+    console.error("DocMesh: Embed script element not found.");
     return;
   }
 
   const botId = script.getAttribute("data-bot-id");
 
   if (!botId) {
-    console.error("Knowly: data-bot-id is required.");
+    console.error("DocMesh: data-bot-id is required.");
     return;
   }
 
@@ -24,7 +24,7 @@
   const iframe = document.createElement("iframe");
 
   iframe.src = `${origin}/embed/${encodeURIComponent(botId)}`;
-  iframe.title = "Knowly Chatbot Widget";
+  iframe.title = "DocMesh Chatbot Widget";
   iframe.allow = "clipboard-write";
 
   Object.assign(iframe.style, {
@@ -49,7 +49,7 @@
     if (
       eventOrigin !== origin ||
       source !== iframe.contentWindow ||
-      data?.type !== "KNOWLY_CHATBOT_RESIZE"
+      data?.type !== "DocMesh_CHATBOT_RESIZE"
     ) {
       return;
     }
