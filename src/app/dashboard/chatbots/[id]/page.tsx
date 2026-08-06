@@ -12,10 +12,12 @@ import EmbedCode from "@/components/chatbot/embed-code";
 import ThemeSelector from "@/components/dashboard/ThemeSelector";
 import DeleteChatbotButton from "@/components/chatbot/delete-chatbot-button";
 
+interface ChatbotPageParams {
+  id: string;
+}
+
 interface ChatbotPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<ChatbotPageParams>;
 }
 
 interface ChatbotDocument {
