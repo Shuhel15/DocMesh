@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -10,11 +10,11 @@ datasource db {
 
 // Password is optional because we will be using OAuth for authentication, but it is still required for the Prisma schema to work properly.
 model User {
-  id       String  @id @default(cuid())
-  name     String?
-  email    String  @unique
-  password String?
-  image    String?
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  image         String?
   // emailVerified is optional because we will be using OAuth for authentication, but it is still required for the Prisma schema to work properly.
   emailVerified DateTime?
 
@@ -47,7 +47,7 @@ model Account {
   id_token          String? @db.Text
   session_state     String?
 
-// account belongs to a user, so we need to store the userId in the account model
+  // account belongs to a user, so we need to store the userId in the account model
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -59,7 +59,7 @@ model Session {
   userId       String
   expires      DateTime
 
-// session belongs to a user, so we need to store the userId in the session model
+  // session belongs to a user, so we need to store the userId in the session model
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])

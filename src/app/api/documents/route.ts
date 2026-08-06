@@ -4,7 +4,6 @@ import prisma from "@/lib/prisma";
 import { extractText } from "@/lib/documents/extract-text";
 import { chunkText } from "@/lib/rag/chunk";
 import { generateEmbedding } from "@/lib/rag/embeddings";
-import { Prisma } from "@/generated/prisma/client";
 
 const ALLOWED_FILE_TYPES = ["pdf", "txt", "doc", "docx"];
 
@@ -118,8 +117,7 @@ export async function POST(request: Request) {
         const embeddingString = `[${embedding.join(",")}]`;
 
         // Store chunk + embedding in PostgreSQL
-        await prisma.$queryRaw(
-          Prisma.sql`
+        await prisma.$queryRaw`
       INSERT INTO "DocumentChunk"
         ("id", "content", "chunkIndex", "documentId", "chatbotId", "embedding")
       VALUES
@@ -131,8 +129,7 @@ export async function POST(request: Request) {
           ${chatbot.id},
           ${embeddingString}::vector
         )
-    `,
-        );
+    `;
       }
 
       console.log("ALL CHUNKS EMBEDDING + STORAGE DONE");
@@ -200,8 +197,7 @@ export async function POST(request: Request) {
         const embeddingString = `[${embedding.join(",")}]`;
 
         // Store chunk + embedding
-        await prisma.$queryRaw(
-          Prisma.sql`
+        await prisma.$queryRaw`
       INSERT INTO "DocumentChunk"
         ("id", "content", "chunkIndex", "documentId", "chatbotId", "embedding")
       VALUES
@@ -213,8 +209,7 @@ export async function POST(request: Request) {
           ${chatbot.id},
           ${embeddingString}::vector
         )
-    `,
-        );
+    `;
       }
 
       console.log("ALL MANUAL CHUNKS EMBEDDING + STORAGE DONE");
@@ -460,21 +455,18 @@ export async function PUT(request: Request) {
 
       const embeddingString = `[${embedding.join(",")}]`;
 
-      await prisma.$queryRaw(
-        Prisma.sql`
-          INSERT INTO "DocumentChunk"
-            ("id", "content", "chunkIndex", "documentId", "chatbotId", "embedding")
-          VALUES
-            (
-              ${crypto.randomUUID()},
-              ${chunkContent},
-              ${i},
-              ${document.id},
-              ${chatbotId},
-              ${embeddingString}::vector
-            )
-        `,
-      );
+      await prisma.$queryRaw`
+        INSERT INTO "DocumentChunk"
+          ("id", "content", "chunkIndex", "documentId", "chatbotId", "embedding")
+        VALUES
+          (
+            ${crypto.randomUUID()},
+            ${chunkContent},
+            ${i},
+            ${document.id},
+            ${chatbotId},
+            ${embeddingString}::vector
+          )`;
     }
 
     return NextResponse.json({
