@@ -386,7 +386,7 @@ export default function ChatPreview({
                   isBlack ? "text-zinc-300" : "text-zinc-600"
                 }`}
               >
-                DocMesh AI
+                DocMesh
               </span>
             </p>
           </div>
