@@ -109,8 +109,7 @@ export default function RegisterPage() {
         return;
       }
 
-      setSuccess("Account created successfully. Redirecting to verify your email...");
-      sessionStorage.setItem("verificationEmail", email);
+      setSuccess("Account created successfully! Redirecting to login...");
 
       setFormData({
         name: "",
@@ -119,7 +118,7 @@ export default function RegisterPage() {
         confirmPassword: "",
       });
 
-      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+      router.push("/login?registered=true");
     } catch (error) {
       console.error("REGISTER ERROR:", error);
       setError("Something went wrong. Please try again.");

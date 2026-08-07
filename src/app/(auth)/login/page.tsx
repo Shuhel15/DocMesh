@@ -61,8 +61,10 @@ function LoginContent() {
   const [error, setError] = useState("");
 
   const successMessage =
-    searchParams.get("verified") === "true"
-      ? "Email verified successfully. You can now log in."
+    searchParams.get("registered") === "true"
+      ? "Account created successfully! Please log in with your credentials."
+      : searchParams.get("verified") === "true"
+      ? "Account ready. You can now log in."
       : "";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,12 +81,7 @@ function LoginContent() {
       });
 
       if (result?.error) {
-        if (result.error.toLowerCase().includes("verify")) {
-          setError("Please verify your email.");
-        } else {
-          setError("Invalid email or password.");
-        }
-
+        setError("Invalid email or password.");
         return;
       }
 

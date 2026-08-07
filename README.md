@@ -17,7 +17,7 @@
 - 🎨 **Customizable Chatbot Themes**: Pick between sleek **Black** and clean **White** visual themes for embedded widgets.
 - ⚡ **Instant Embed Script**: Copy-paste a lightweight `<script>` tag onto any website, Webflow, Shopify, or custom Web page to deploy your AI assistant instantly.
 - 👁️ **Live Interactive Preview**: Test and chat with your AI chatbot inside your dashboard before deploying it to production.
-- 🔐 **Secure Authentication**: Built-in NextAuth v5 supporting **Google OAuth** and **Email/Password Credentials** with email verification via Resend.
+- 🔐 **Secure Authentication**: Built-in NextAuth v5 supporting **Google OAuth** and **Email/Password Credentials** with seamless registration, direct login, and secure dashboard redirection.
 - 📱 **100% Fully Responsive**: Pixel-perfect responsive layout optimized across small mobiles (320px+), smartphones, tablets, and desktop laptops.
 - 🌙 **Dark / Light Theme Toggle**: Built-in dark and light mode for the management dashboard.
 
@@ -34,7 +34,6 @@
 | **Document Parsers** | `unpdf`, `mammoth`, `word-extractor` |
 | **Database & ORM** | [Prisma ORM 6](https://www.prisma.io/) + Supabase |
 | **Authentication** | [NextAuth v5 (Beta)](https://authjs.dev/) + `@auth/prisma-adapter` |
-| **Email Service** | [Resend](https://resend.com/) |
 
 ---
 
@@ -48,7 +47,7 @@ DocMesh/
 ├── public/                      # Static assets & public files
 ├── src/
 │   ├── app/                     # Next.js App Router
-│   │   ├── (auth)/              # Authentication routes (login, register, verify-email)
+│   │   ├── (auth)/              # Authentication routes (login, register)
 │   │   ├── api/                 # Backend API Route Handlers
 │   │   │   ├── auth/            # Auth & registration endpoints
 │   │   │   ├── chat/            # RAG chat execution route
@@ -88,7 +87,6 @@ Ensure you have the following installed on your local machine:
 - **Node.js**: `v18.17.0` or higher
 - **npm** or **yarn** / **pnpm**
 - A **Google Gemini API Key** (from [Google AI Studio](https://aistudio.google.com/))
-- A **Resend API Key** (optional for email verification in production)
 
 ---
 
@@ -123,10 +121,6 @@ Ensure you have the following installed on your local machine:
    # Google OAuth Credentials (Optional for Google Login)
    AUTH_GOOGLE_ID="your-google-client-id"
    AUTH_GOOGLE_SECRET="your-google-client-secret"
-
-   # Resend Email API Key (Optional for verification emails)
-   RESEND_API_KEY="re_123456789"
-   EMAIL_FROM="DocMesh <noreply@yourdomain.com>"
    ```
 
 4. **Initialize Database & Run Migrations**
