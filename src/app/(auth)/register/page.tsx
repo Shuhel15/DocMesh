@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
-import { getSession, signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { motion, type Variants } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 
@@ -55,6 +54,7 @@ const itemVariants: Variants = {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -67,7 +67,6 @@ export default function RegisterPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [checkingSession, setCheckingSession] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -134,7 +133,7 @@ export default function RegisterPage() {
 
     try {
       await signIn("google", {
-        callbackUrl: "/dashboard",
+        callbackUrl: "/",
       });
     } catch (error) {
       console.error("GOOGLE LOGIN ERROR:", error);
@@ -144,29 +143,10 @@ export default function RegisterPage() {
   };
 
   useEffect(() => {
-    const checkSession = async () => {
-      const session = await getSession();
-
-      if (session) {
-        router.replace("/dashboard");
-        return;
-      }
-
-      setCheckingSession(false);
-    };
-
-    checkSession();
-  }, [router]);
-
-  if (checkingSession) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader />
-        </div>
-      </main>
-    );
-  }
+    if (status === "authenticated" && session?.user) {
+      router.replace("/");
+    }
+  }, [status, session, router]);
 
   return (
     <main className="min-h-screen bg-background px-4 pt-24 sm:pt-28 pb-12 text-foreground sm:px-6 lg:px-8">

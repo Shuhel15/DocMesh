@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
@@ -53,12 +53,19 @@ const itemVariants: Variants = {
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      router.replace("/");
+    }
+  }, [status, session, router]);
 
   const successMessage =
     searchParams.get("registered") === "true"
@@ -86,7 +93,7 @@ function LoginContent() {
       }
 
       if (result?.ok) {
-        router.replace("/dashboard");
+        router.replace("/");
       }
     } catch (error) {
       console.error("LOGIN ERROR:", error);
@@ -102,7 +109,7 @@ function LoginContent() {
 
     try {
       await signIn("google", {
-        callbackUrl: "/dashboard",
+        callbackUrl: "/",
       });
     } catch (error) {
       console.error("GOOGLE_LOGIN_ERROR:", error);
