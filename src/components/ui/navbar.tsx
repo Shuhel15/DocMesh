@@ -150,6 +150,7 @@ export default function Navbar() {
               </button>
               <Link
                 href="/dashboard"
+                prefetch={false}
                 className="rounded-xl bg-foreground px-4 py-2 text-[14px] font-semibold text-background transition hover:opacity-90"
               >
                 Dashboard
@@ -276,10 +277,11 @@ export default function Navbar() {
                   </button>
                   <Link
                     href="/dashboard"
+                    prefetch={false}
                     onClick={closeMenu}
                     className="w-full rounded-xl bg-foreground px-4 py-2.5 text-center text-sm font-semibold text-background transition hover:opacity-90"
                   >
-                    Go to Dashboard
+                    Dashboard
                   </Link>
                 </>
               ) : (
