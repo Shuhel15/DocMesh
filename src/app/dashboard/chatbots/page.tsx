@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Bot, ArrowRight } from "lucide-react";
-import { Loader } from "@/components/ui/loader";
 import { motion, type Variants } from "framer-motion";
 import DeleteChatbotButton from "@/components/chatbot/delete-chatbot-button";
+import Loading from "@/app/loading";
 
 type Chatbot = {
   id: string;
@@ -95,7 +95,7 @@ export default function ChatbotsPage() {
         <div className="mt-10">
           {loading ? (
             <div className="flex justify-center py-20">
-              <Loader />
+              <Loading/>
             </div>
           ) : chatbots.length === 0 ? (
             <motion.div
