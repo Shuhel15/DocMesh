@@ -71,7 +71,19 @@ export default function Footer() {
                     transition={{ duration: 0.2 }}
                   >
                     <a
-                      href="#"
+                      href={
+                        link === "Features"
+                          ? "/#features"
+                          : link === "How It Works"
+                            ? "/#how-it-works"
+                            : link === "GitHub"
+                              ? "https://github.com/Shuhel15"
+                              : "#"
+                      }
+                      target={link === "GitHub" ? "_blank" : undefined}
+                      rel={
+                        link === "GitHub" ? "noopener noreferrer" : undefined
+                      }
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link}
@@ -97,11 +109,11 @@ export default function Footer() {
         >
           <p>© {new Date().getFullYear()} DocMesh. All rights reserved.</p>
           <p className="items-center text-center justify-center">
-            Made with 
+            Made with
             <span className="mx-1 inline-flex items-center justify-center text-center animate-pulse gap-1 text-red-500">
               <FaHeart />
-            </span> 
-             by Shuhel Ahmed
+            </span>
+            by Shuhel Ahmed
           </p>
 
           <div className="flex gap-5">
