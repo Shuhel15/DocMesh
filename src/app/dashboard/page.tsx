@@ -106,7 +106,7 @@ export default async function DashboardPage() {
               <Link
                 href="/dashboard/chatbots"
                 className="group inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted
-                hover:scale-105 ease-in-out duration-200"
+                 duration-200"
               >
                 View All Chatbots
                 <ArrowRight size={16} className="group-hover:transition-transform group-hover:translate-x-1" />

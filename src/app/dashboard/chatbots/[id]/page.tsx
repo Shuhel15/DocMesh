@@ -105,8 +105,8 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
               </h1>
               <p className="text-xs text-muted-foreground mt-1 truncate">
                 Created on {new Date(chatbot.createdAt).toLocaleDateString()}{" "}
-                <br />
-                ID: {chatbot.id}
+                {/* <br />
+                ID: {chatbot.id} */}
               </p>
             </div>
           </div>
