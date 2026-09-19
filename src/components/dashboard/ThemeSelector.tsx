@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 type Theme = "black" | "white";
 
@@ -45,9 +46,11 @@ export default function ThemeSelector({
           detail: newTheme,
         }),
       );
+      toast.success("Chatbot theme updated.");
     } catch (error) {
       console.error("Theme update error:", error);
       setTheme(previousTheme);
+      toast.error("Failed to update chatbot theme.");
     } finally {
       setIsUpdating(false);
     }

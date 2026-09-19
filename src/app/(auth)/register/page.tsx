@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { motion, type Variants } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
-
+import toast from "react-hot-toast";
 
 const pageVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -36,7 +36,6 @@ const formVariants: Variants = {
   },
 };
 
-
 const itemVariants: Variants = {
   hidden: {
     opacity: 0,
@@ -54,7 +53,6 @@ const itemVariants: Variants = {
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -104,11 +102,11 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || data.error || "Registration failed.");
+        toast.error(data.message || data.error || "Registration failed.");
         return;
       }
 
-      setSuccess("Account created successfully! Redirecting to login...");
+      toast.success("Account created. Check your email for the OTP.");
 
       setFormData({
         name: "",
@@ -117,10 +115,11 @@ export default function RegisterPage() {
         confirmPassword: "",
       });
 
-      router.push("/login?registered=true");
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+
     } catch (error) {
       console.error("REGISTER ERROR:", error);
-      setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -137,16 +136,10 @@ export default function RegisterPage() {
       });
     } catch (error) {
       console.error("GOOGLE LOGIN ERROR:", error);
-      setError("Google login failed. Please try again.");
+      toast.error("Google login failed. Please try again.");
       setGoogleLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (status === "authenticated" && session?.user) {
-      router.replace("/");
-    }
-  }, [status, session, router]);
 
   return (
     <main className="min-h-screen bg-background px-4 pt-24 sm:pt-28 pb-12 text-foreground sm:px-6 lg:px-8">

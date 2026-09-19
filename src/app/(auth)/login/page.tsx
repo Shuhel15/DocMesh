@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 const pageVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -88,16 +89,17 @@ function LoginContent() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password.");
+        toast.error("Invalid email or password.");
         return;
       }
 
       if (result?.ok) {
+        toast.success("Logged in successfully.");
         router.replace("/");
       }
     } catch (error) {
       console.error("LOGIN ERROR:", error);
-      setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -113,7 +115,7 @@ function LoginContent() {
       });
     } catch (error) {
       console.error("GOOGLE_LOGIN_ERROR:", error);
-      setError("Google login failed. Please try again.");
+      toast.error("Google login failed. Please try again.");
       setGoogleLoading(false);
     }
   };

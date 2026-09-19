@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 import { MoveLeft, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const containerVariants: Variants = {
   hidden: {},
@@ -55,16 +56,17 @@ export default function NewChatbotPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        console.error(data.message);
+        toast.error(data.message || "Failed to create chatbot.");
         setLoading(false);
         return;
       }
 
-      console.log("Chatbot created:", data.chatbot);
+      toast.success("Chatbot created successfully.");
 
       router.push(`/dashboard/chatbots/${data.chatbot.id}`);
     } catch (error) {
       console.error("CREATE CHATBOT ERROR:", error);
+      toast.error("Failed to create chatbot. Please try again.");
       setLoading(false);
     }
   };

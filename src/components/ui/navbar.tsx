@@ -80,7 +80,10 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     closeMenu();
-    await signOut({ callbackUrl: "/" });
+    // Update the SessionProvider before navigating so the register page does
+    // not see the previous session during the logout-to-register transition.
+    await signOut({ redirect: false });
+    router.replace("/");
   };
 
   const handleActionClick = () => {

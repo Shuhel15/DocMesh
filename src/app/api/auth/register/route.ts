@@ -2,6 +2,9 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import redis from "@/lib/redis";
+import { generateOTP } from "@/lib/utils";
+import { sendOTPEmail } from "@/lib/email";
 
 const registerSchema = z.object({
   name: z
@@ -35,7 +38,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const { name, email, password } = result.data;
+    const { name, password } = result.data;
+    const email = result.data.email.toLowerCase();
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -56,12 +60,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        emailVerified: new Date(),
-      },
+      data: { name, email, password: hashedPassword, emailVerified: null },
       select: {
         id: true,
         name: true,
@@ -70,10 +69,21 @@ export async function POST(req: Request) {
       },
     });
 
+    try {
+      const otp = generateOTP();
+
+      await redis.set(`otp:${email}`, otp, "EX", 600); // Store OTP in Redis with a 10-minute expiration
+      await sendOTPEmail(email, otp); // For sending OTP to the user email for verification
+    } catch (error) {
+      await redis.del(`otp:${email}`);
+      await prisma.user.delete({ where: { id: user.id } });
+      throw error;
+    }
+
     return NextResponse.json(
       {
         success: true,
-        message: "User registered successfully",
+        message: "Registation successful. Please check your email for the OTP to verify your account.",
         user,
       },
       { status: 201 },

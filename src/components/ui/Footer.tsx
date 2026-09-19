@@ -6,7 +6,7 @@ import { FaHeart } from "react-icons/fa";
 const footerLinks = {
   Product: ["Features", "How It Works"],
   Resources: ["Documentation", "Contact"],
-  Company: ["About", "GitHub"],
+  Company: ["Portfolio", "GitHub"],
 };
 
 const containerVariants: Variants = {
@@ -76,13 +76,21 @@ export default function Footer() {
                           ? "/#features"
                           : link === "How It Works"
                             ? "/#how-it-works"
+                            : link === "Portfolio"
+                              ? "https://shuhel.tech"
                             : link === "GitHub"
                               ? "https://github.com/Shuhel15"
                               : "#"
                       }
-                      target={link === "GitHub" ? "_blank" : undefined}
+                      target={
+                        link === "Portfolio" || link === "GitHub"
+                          ? "_blank"
+                          : undefined
+                      }
                       rel={
-                        link === "GitHub" ? "noopener noreferrer" : undefined
+                        link === "Portfolio" || link === "GitHub"
+                          ? "noopener noreferrer"
+                          : undefined
                       }
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >

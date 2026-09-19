@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Pencil, Loader2, Save, X } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface EditDocumentModalProps {
   documentId: string;
@@ -72,11 +73,12 @@ export default function EditDocumentModal({
       }
 
       setIsOpen(false);
-      window.location.reload();
+      toast.success("Document updated successfully.");
+      setTimeout(() => window.location.reload(), 500);
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Something went wrong"
-      );
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSaving(false);
     }

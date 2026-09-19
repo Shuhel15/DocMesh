@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning >
       <body className={`${spaceGrotesk.variable} font-sans antialiased`}>
         <SessionProvider>
+          <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

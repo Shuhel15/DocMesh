@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FileText, Loader2, Save } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface ManualTextFormProps {
   chatbotId: string;
@@ -52,16 +53,15 @@ export default function ManualTextForm({
       }
 
       setMessage("Knowledge saved successfully.");
+      toast.success("Knowledge saved successfully.");
       setTitle("");
       setContent("");
 
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 500);
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
-      );
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }

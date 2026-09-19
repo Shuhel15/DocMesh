@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface DeleteDocumentButtonProps {
   documentId: string;
@@ -37,12 +38,13 @@ export default function DeleteDocumentButton({
         throw new Error(data.error || "Failed to delete document");
       }
 
+      toast.success("Document deleted successfully.");
       // Refresh server component data
       window.location.reload();
     } catch (error) {
       console.error("DELETE DOCUMENT ERROR:", error);
 
-      alert(
+      toast.error(
         error instanceof Error
           ? error.message
           : "Failed to delete document",

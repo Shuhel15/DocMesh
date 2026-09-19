@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Upload, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface UploadFormProps {
   chatbotId: string;
@@ -43,16 +44,15 @@ export default function UploadForm({
       }
 
       setMessage("Document uploaded successfully.");
+      toast.success("Document uploaded successfully.");
       setFile(null);
 
       // Refresh server component data
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 500);
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
-      );
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      setError(message);
+      toast.error(message);
     } finally {
       setUploading(false);
     }

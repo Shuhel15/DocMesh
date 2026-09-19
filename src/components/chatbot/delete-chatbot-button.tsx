@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface DeleteChatbotButtonProps {
   chatbotId: string;
@@ -50,13 +51,15 @@ export default function DeleteChatbotButton({
         onSuccess();
       }
 
+      toast.success("Chatbot deleted successfully.");
+
       if (redirectTo) {
         router.push(redirectTo);
         router.refresh();
       }
     } catch (error) {
       console.error("DELETE_CHATBOT_ERROR:", error);
-      alert(
+      toast.error(
         error instanceof Error
           ? error.message
           : "Failed to delete chatbot. Please try again."
