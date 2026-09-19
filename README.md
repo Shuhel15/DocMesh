@@ -18,6 +18,8 @@
 - ⚡ **Instant Embed Script**: Copy-paste a lightweight `<script>` tag onto any website, Webflow, Shopify, or custom Web page to deploy your AI assistant instantly.
 - 👁️ **Live Interactive Preview**: Test and chat with your AI chatbot inside your dashboard before deploying it to production.
 - 🔐 **Secure Authentication**: Built-in NextAuth v5 supporting **Google OAuth** and **Email/Password Credentials** with seamless registration, direct login, and secure dashboard redirection.
+- 📧 **Email OTP Verification**: New credential accounts must verify their email with a six-digit OTP before login. OTPs expire after 10 minutes and can be resent from the verification page.
+- 🔔 **Toast Notifications**: `react-hot-toast` provides consistent success and error feedback for authentication, chatbot, document, theme, and OTP actions.
 - 📱 **100% Fully Responsive**: Pixel-perfect responsive layout optimized across small mobiles (320px+), smartphones, tablets, and desktop laptops.
 - 🌙 **Dark / Light Theme Toggle**: Built-in dark and light mode for the management dashboard.
 
@@ -34,6 +36,8 @@
 | **Document Parsers** | `unpdf`, `mammoth`, `word-extractor` |
 | **Database & ORM** | [Prisma ORM 6](https://www.prisma.io/) + Supabase |
 | **Authentication** | [NextAuth v5 (Beta)](https://authjs.dev/) + `@auth/prisma-adapter` |
+| **Email & OTP** | `nodemailer` with Gmail SMTP + Redis (`ioredis`) |
+| **Notifications** | [`react-hot-toast`](https://react-hot-toast.com/) |
 
 ---
 
@@ -49,7 +53,7 @@ DocMesh/
 │   ├── app/                     # Next.js App Router
 │   │   ├── (auth)/              # Authentication routes (login, register)
 │   │   ├── api/                 # Backend API Route Handlers
-│   │   │   ├── auth/            # Auth & registration endpoints
+│   │   │   ├── auth/            # Auth, registration, OTP verification & resend endpoints
 │   │   │   ├── chat/            # RAG chat execution route
 │   │   │   ├── chatbots/        # Chatbot CRUD & theme management
 │   │   │   └── documents/       # Document upload, text extraction & deletion
@@ -107,21 +111,31 @@ Ensure you have the following installed on your local machine:
    Create a `.env` file in the root directory and add the following keys:
 
    ```env
-   # App URL
+   # App URL and NextAuth configuration
    NEXTAUTH_URL="http://localhost:3000"
-   NEXTAUTH_SECRET="your-super-secret-key-here"
+   AUTH_SECRET="your-super-secret-key-here"
 
-   # Database Connection
-   DATABASE_URL="file:./dev.db" # or PostgreSQL URL: postgresql://user:pass@localhost:5432/DocMesh
+   # PostgreSQL database connections
+   DATABASE_URL="postgresql://user:password@host:5432/docmesh?schema=public"
+   DIRECT_URL="postgresql://user:password@host:5432/docmesh?schema=public"
 
-   # Google Gemini AI Keys (same key value can be used for both)
+   # Google Gemini API keys
    GEMINI_API_KEY="your-gemini-api-key"
    GOOGLE_GENAI_API_KEY="your-gemini-api-key"
 
-   # Google OAuth Credentials (Optional for Google Login)
-   AUTH_GOOGLE_ID="your-google-client-id"
-   AUTH_GOOGLE_SECRET="your-google-client-secret"
+   # Google OAuth credentials (required if Google Login is enabled)
+   GOOGLE_CLIENT_ID="your-google-client-id"
+   GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+   # Gmail SMTP credentials for registration and OTP emails
+   SMTP_USER="your-gmail-address@gmail.com"
+   SMTP_PASSWORD="your-gmail-app-password"
+
+   # Redis connection used to store OTPs temporarily
+   REDIS_URL="redis://default:password@host:6379"
    ```
+
+   `DIRECT_URL` is used by Prisma migrations, while `DATABASE_URL` is used by the application. For Gmail, use a Google **App Password** rather than your regular account password. Keep `.env` out of source control and never expose these values in client-side code.
 
 4. **Initialize Database & Run Migrations**
    ```bash
@@ -135,6 +149,23 @@ Ensure you have the following installed on your local machine:
    ```
 
    Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+
+---
+
+## 📧 Email Verification Flow
+
+1. A user registers with a name, email, and password.
+2. DocMesh creates the account and sends a six-digit OTP through Gmail SMTP.
+3. The OTP is stored in Redis with a 10-minute expiration.
+4. The user verifies the OTP at `/verify-email?email=...`.
+5. After successful verification, the user can log in with credentials.
+6. If the email is not received, the verification page can request a new OTP. Resending is rate-limited by a 60-second client-side cooldown.
+
+Relevant API routes:
+
+- `POST /api/auth/register`
+- `POST /api/auth/verify-email`
+- `POST /api/auth/resend-otp`
 
 ---
 
