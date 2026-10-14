@@ -151,7 +151,7 @@ function LoginContent() {
             <motion.form onSubmit={handleSubmit} className="space-y-4">
               <motion.h1
                 variants={itemVariants}
-                className="text-center text-2xl font-bold text-foreground"
+                className="text-center text-4xl xs:text-3xl sm:text-5xl lg:text-6xl font-bold text-foreground"
               >
                 Welcome back
               </motion.h1>

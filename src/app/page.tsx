@@ -61,7 +61,7 @@ export default function Home() {
 
           <motion.h1
             variants={itemVariants}
-            className="text-2xl xs:text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
+            className="text-4xl xs:text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
           >
             Your Data. Your Bot.{" "}
             <span className="relative inline-block">

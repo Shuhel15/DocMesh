@@ -183,13 +183,13 @@ export default function Navbar() {
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
+              className="group flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
-                <Sun className="h-4 w-4" />
+                <Sun className=" transition-transform group-hover:rotate-45 duration-300 active:rotate-45 h-4 w-4" />
               ) : (
-                <Moon className="h-4 w-4" />
+                <Moon className=" transition-transform group-hover:rotate-45 duration-300 active:rotate-45 h-4 w-4" />
               )}
             </motion.button>
           )}
@@ -202,13 +202,13 @@ export default function Navbar() {
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
+              className="group flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground transition hover:bg-muted dark:border-white/20 dark:hover:bg-white/10"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
-                <Sun className="h-4 w-4" />
+                <Sun className=" transition-transform group-hover:rotate-45 duration-300 active:rotate-45 h-4 w-4" />
               ) : (
-                <Moon className="h-4 w-4" />
+                <Moon className=" transition-transform group-hover:rotate-45 duration-300 active:rotate-45 h-4 w-4" />
               )}
             </motion.button>
           )}

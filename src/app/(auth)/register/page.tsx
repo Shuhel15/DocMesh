@@ -173,7 +173,7 @@ export default function RegisterPage() {
             <motion.form onSubmit={handleSubmit} className="space-y-4">
               <motion.h1
                 variants={itemVariants}
-                className="text-center text-2xl font-bold text-foreground"
+                className="text-center text-4xl sx:text-3xl sm:text-5xl lg:text-6xl font-bold text-foreground"
               >
                 Create your account
               </motion.h1>

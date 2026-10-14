@@ -107,7 +107,7 @@ export default function ChatbotPreview() {
             Chatbot Themes
           </p>
 
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:mt-4 sm:text-5xl">
+          <h2 className="mt-3 text-4xl xs:text-3xl font-bold tracking-tight sm:mt-4 sm:text-5xl lg:text-6xl">
             Designed to fit your website.
           </h2>
 

@@ -81,7 +81,7 @@ export default function DeleteChatbotButton({
         {isDeleting ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          <Trash2 size={16} />
+          <Trash2 size={16} className="transition-transform group-hover:-translate-y-0.5" />
         )}
       </button>
     );

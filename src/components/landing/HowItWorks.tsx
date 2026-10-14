@@ -75,7 +75,7 @@ export default function HowItWorks() {
             How It Works
           </p>
 
-          <h2 className="mt-3 sm:mt-4 text-2xl xs:text-3xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="mt-3 sm:mt-4 text-4xl xs:text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             From your knowledge to an AI chatbot.
           </h2>
 

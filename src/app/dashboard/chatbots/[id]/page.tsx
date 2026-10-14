@@ -100,7 +100,7 @@ export default async function ChatbotDetailPage({ params }: ChatbotPageProps) {
               <Bot size={24} />
             </div>
             <div className="min-w-0">
-              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight truncate">
+              <h1 className="text-2xl xs:text-xl sm:text-4xl  font-semibold tracking-tight truncate">
                 {chatbot.name}
               </h1>
               <p className="text-xs text-muted-foreground mt-1 truncate">

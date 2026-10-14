@@ -74,7 +74,7 @@ export default function ChatbotsPage() {
           className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
         >
           <div>
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            <h1 className="text-4xl xs:text-3xl sm:text-5xl   font-semibold tracking-tight">
               Your Chatbots
             </h1>
 

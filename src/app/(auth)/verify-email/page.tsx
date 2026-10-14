@@ -109,7 +109,7 @@ export default function VerifyEmailPage() {
       <div className="w-full max-w-md">
         <div className="border border-border bg-card p-6 sm:p-8">
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-semibold">Verify Email</h1>
+            <h1 className="text-4xl xs:text-3xl sm:text-5xl lg:text-6xl font-semibold">Verify Email</h1>
 
             <p className="mt-2 text-sm text-muted-foreground">
               We sent a 6-digit OTP to your email.

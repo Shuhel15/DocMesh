@@ -88,7 +88,7 @@ export default function NewChatbotPage() {
             <MoveLeft size={16} className="group-hover:transition-transform group-hover:-translate-x-1" /> Back to Chatbots
           </Link>
 
-          <h1 className="text-3xl font-semibold tracking-tight">
+          <h1 className="text-4xl xs:text-3xl sm:text-5xl font-semibold tracking-tight">
             Create your AI chatbot
           </h1>
 

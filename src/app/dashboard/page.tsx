@@ -64,7 +64,7 @@ export default async function DashboardPage() {
           <div>
             <p className="text-sm text-muted-foreground">Dashboard</p>
 
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+            <h1 className="mt-1 text-4xl xs:text-3xl sm:text-5xl  font-semibold tracking-tight">
               Welcome back, {userName}
             </h1>
 
